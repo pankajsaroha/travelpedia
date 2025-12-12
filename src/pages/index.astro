@@ -20,7 +20,7 @@ const featured = cityPages.slice(0, 6);
     </h1>
 
     <p class="mt-4 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-      Explore hand-picked travel guides with history, places to visit, best hotels, tips, and local secrets.
+      Explore curated travel guides with history, must-visit spots, hotels, routes & more.
     </p>
 
     <!-- SEARCH BAR -->
@@ -58,45 +58,54 @@ const featured = cityPages.slice(0, 6);
     </h2>
 
     <div class="grid md:grid-cols-3 gap-6">
-      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 shadow-sm hover:shadow-md transition">
+
+      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 
+                  shadow-sm hover:shadow-md transition">
         <h3 class="text-xl font-semibold mb-2">Spiritual Journeys</h3>
-        <p class="text-slate-700 dark:text-slate-300 text-sm">Explore pilgrimage sites, ancient temples & sacred rivers.</p>
+        <p class="text-slate-700 dark:text-slate-300 text-sm">
+          Explore temples, rituals & sacred rivers across India.
+        </p>
       </div>
 
-      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 shadow-sm hover:shadow-md transition">
+      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 
+                  shadow-sm hover:shadow-md transition">
         <h3 class="text-xl font-semibold mb-2">Adventure Destinations</h3>
-        <p class="text-slate-700 dark:text-slate-300 text-sm">Trekking, rafting, camping, mountains & thrilling routes.</p>
+        <p class="text-slate-700 dark:text-slate-300 text-sm">
+          Rafting, trekking, mountains, camping & thrilling trails.
+        </p>
       </div>
 
-      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 shadow-sm hover:shadow-md transition">
+      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 
+                  shadow-sm hover:shadow-md transition">
         <h3 class="text-xl font-semibold mb-2">Family Getaways</h3>
-        <p class="text-slate-700 dark:text-slate-300 text-sm">Comfortable trips, scenic places & peaceful escapes.</p>
+        <p class="text-slate-700 dark:text-slate-300 text-sm">
+          Peaceful escapes, scenic viewpoints & memorable trips.
+        </p>
       </div>
+
     </div>
   </section>
 
   <!-- CALL TO ACTION -->
-  <section class="py-16 mt-10 rounded-2xl bg-gradient-to-r from-accent to-accentDark text-white text-center shadow-lg">
+  <section class="py-16 mt-10 rounded-2xl bg-gradient-to-r from-accent to-accentDark text-white 
+                  text-center shadow-lg">
     <h2 class="text-4xl font-bold mb-4">Plan Your Next Journey</h2>
-    <p class="text-lg mb-6 opacity-90">Discover curated guides for every city in India.</p>
+    <p class="text-lg mb-6 opacity-90">
+      Travelpedia helps you explore destinations like never before.
+    </p>
     
     <a href="/"
-      class="inline-block px-8 py-4 bg-white text-accent font-semibold rounded-xl shadow-md hover:bg-slate-100 transition">
+      class="inline-block px-8 py-4 bg-white text-accent font-semibold rounded-xl shadow-md 
+             hover:bg-slate-100 transition">
       Start Exploring
     </a>
   </section>
 
 </BaseLayout>
 
-<!-- SAFE JSON EMBED FOR SEARCH -->
-<script type="application/json" id="city-data">
-  {JSON.stringify(cityPages)}
-</script>
-
-<!-- SEARCH LOGIC -->
-<script is:inline>
-  const dataEl = document.getElementById("city-data");
-  const cities = JSON.parse(dataEl.textContent);
+<!-- FINAL, UNBREAKABLE SEARCH LOGIC -->
+<script is:inline define:vars={{ cityPages }}>
+  const cities = cityPages;
 
   const input = document.getElementById("site-search");
   const suggestions = document.getElementById("suggestions");
@@ -106,7 +115,9 @@ const featured = cityPages.slice(0, 6);
       <div class="p-3 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer border-b dark:border-slate-700"
            data-slug="${c.slug}">
         <div class="font-semibold">${c.title}</div>
-        <div class="text-sm text-slate-500 dark:text-slate-400">${c.excerpt || ""}</div>
+        <div class="text-sm text-slate-500 dark:text-slate-400">
+          ${c.excerpt || ""}
+        </div>
       </div>
     `;
   }
@@ -114,12 +125,16 @@ const featured = cityPages.slice(0, 6);
   function search(q) {
     q = q.toLowerCase();
     return cities.filter((c) =>
-      (c.title + " " + (c.excerpt || "") + " " + (c.state || "")).toLowerCase().includes(q)
+      (c.title + " " + (c.excerpt || "") + " " + (c.state || ""))
+        .toLowerCase()
+        .includes(q)
     );
   }
 
+  // Typing
   input.addEventListener("input", (e) => {
     const query = e.target.value.trim();
+
     if (!query) {
       suggestions.classList.add("hidden");
       suggestions.innerHTML = "";
@@ -127,6 +142,7 @@ const featured = cityPages.slice(0, 6);
     }
 
     const results = search(query);
+
     suggestions.innerHTML =
       results.length === 0
         ? "<div class='p-3 text-sm text-slate-500 dark:text-slate-400'>No results</div>"
@@ -135,15 +151,18 @@ const featured = cityPages.slice(0, 6);
     suggestions.classList.remove("hidden");
   });
 
+  // Click result
   suggestions.addEventListener("click", (e) => {
     const el = e.target.closest("[data-slug]");
     if (!el) return;
     window.location.href = "/city/" + el.dataset.slug;
   });
 
+  // Enter key
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-      const results = search(input.value.trim());
+      const query = input.value.trim();
+      const results = search(query);
       if (results.length > 0) {
         window.location.href = "/city/" + results[0].slug;
       }
