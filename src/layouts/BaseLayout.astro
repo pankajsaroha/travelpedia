@@ -1,0 +1,36 @@
+--- 
+import ThemeToggle from "../components/ThemeToggle.astro";
+
+const { title, description } = Astro.props;
+--- 
+<!doctype html>
+<html lang="en" class="antialiased">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title ? `${title} — Travelpedia` : 'Travelpedia'}</title>
+    <meta name="description" content={description || 'Travel city guides — history, hotels, hidden gems'} />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/src/styles/main.css" />
+  </head>
+  <body class="min-h-screen font-sans text-slate-900">
+    <header class="py-4 px-6 border-b bg-opacity-40">
+      <div class="max-w-6xl mx-auto flex items-center justify-between">
+        <a class="header-logo text-2xl" href="/">Travelpedia</a>
+        <nav class="flex items-center gap-4">
+          <a class="text-sm text-muted" href="/about">About</a>
+          <a class="text-sm text-muted" href="/contact">Contact</a>
+          <ThemeToggle />
+        </nav>
+      </div>
+    </header>
+
+    <main class="p-6 max-w-6xl mx-auto">
+      <slot />
+    </main>
+
+    <footer class="border-t p-4 text-center text-sm text-muted">
+      © {new Date().getFullYear()} Travelpedia
+    </footer>
+  </body>
+</html>

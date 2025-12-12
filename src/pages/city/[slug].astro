@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const allCities = Object.values(
+    import.meta.glob('../../content/cities/*.md', { eager: true })
+  ).map(mod => mod.frontmatter);
+
+  return allCities.map(city => ({
+    params: { slug: city.slug },
+    props: { city }
+  }));
+}
+
+// Access the `props` from getStaticPaths
+const { city } = Astro.props;
+
+const { slug } = Astro.params;
+const modules = import.meta.glob('../../content/cities/*.md', { eager: true });
+let front = null;
+for (const p in modules) {
+  if (p.endsWith(`/${slug}.md`)) front = modules[p].frontmatter;
+}
+if (!front) throw new Error('City not found');
+---
+
+<BaseLayout title={front.title} description={front.excerpt}>
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="md:col-span-2">
+      <img src={front.image || '/images/placeholder-1.jpg'} class="w-full rounded-lg mb-4" alt={front.title} />
+      <h1 class="text-3xl font-bold">{front.title}</h1>
+      <p class="text-muted mt-2">{front.state}</p>
+
+      <section class="mt-6">
+        <h2 class="text-2xl font-semibold">History</h2>
+        <div class="mt-2">{front.history}</div>
+      </section>
+
+      <section class="mt-6">
+        <h2 class="text-2xl font-semibold">Top places</h2>
+        <ul class="list-disc pl-6 mt-2">
+          {front.bestPlaces?.map((p) => <li>{p}</li>)}
+        </ul>
+      </section>
+
+      <section class="mt-6">
+        <h2 class="text-2xl font-semibold">Hidden gems</h2>
+        <ul class="list-disc pl-6 mt-2">
+          {front.hiddenPlaces?.map((p) => <li>{p}</li>)}
+        </ul>
+      </section>
+      <section class="mt-10">
+        <h2 class="text-2xl font-semibold mb-4">Nearby Recommended Places</h2>
+        <ul class="list-disc pl-6 space-y-1">
+          {front.bestPlaces?.map(place => <li>{place}</li>)}
+          {front.hiddenPlaces?.map(place => <li>{place}</li>)}
+        </ul>
+      </section>
+    </div>
+
+    <aside class="md:col-span-1">
+      <div class="p-4 card rounded-lg">
+        <h3 class="font-semibold">Distances</h3>
+        <p class="text-sm text-muted mt-2">Airport: {front.distances?.airport}</p>
+        <p class="text-sm text-muted">Railway: {front.distances?.railway}</p>
+        <p class="text-sm text-muted">Bus: {front.distances?.bus}</p>
+
+        <h3 class="mt-4 font-semibold">Best Hotels</h3>
+        <ul class="list-disc pl-6 mt-2">
+          {front.bestHotels?.map(h => <li>{h.name} — {h.price}</li>)}
+        </ul>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>

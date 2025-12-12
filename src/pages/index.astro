@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CityCard from '../components/CityCard.astro';
+
+// Load all cities from Markdown
+const cityPages = Object.values(
+  import.meta.glob('../content/cities/*.md', { eager: true })
+).map((m) => m.frontmatter);
+
+// Popular cities
+const popular = cityPages.slice(0, 6);
+
+// Convert JSON → Base64 safely
+const cityPagesJson = JSON.stringify(cityPages);
+const cityPagesBase64 = Buffer.from(cityPagesJson).toString('base64');
+---
+
+<BaseLayout title="Travelpedia — City Guides">
+
+  <!-- HERO SECTION -->
+  <section class="hero mb-8">
+    <div class="max-w-3xl">
+      <h1 class="text-3xl font-bold mb-2">
+        Discover cities — history, sights, hotels & hidden gems
+      </h1>
+      <p class="text-muted">
+        Hand-picked city guides. Fast, modern & SEO-friendly.
+      </p>
+    </div>
+  </section>
+
+  <!-- SEARCH BAR -->
+  <div class="relative mb-6">
+    <input
+      id="site-search"
+      placeholder="Search cities..."
+      class="w-full p-3 border rounded"
+    />
+
+    <!-- Suggestions dropdown -->
+    <div
+      id="suggestions"
+      class="absolute left-0 right-0 bg-white border rounded mt-1 shadow-lg hidden
+             max-h-64 overflow-y-auto z-50"
+    ></div>
+  </div>
+
+  <!-- POPULAR CITIES (Homepage only) -->
+  <section id="popular-wrapper" class="mb-8">
+    <h2 class="text-2xl font-bold mb-4">Popular cities</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {popular.map((c) => <CityCard city={c} />)}
+    </div>
+  </section>
+
+</BaseLayout>
+
+<!-- RAW BASE64 DATA INJECTED CLEANLY -->
+<div id="city-data" type="text/plain" hidden set:html={cityPagesBase64}></div>
+
+<!-- SEARCH LOGIC -->
+<script is:inline>
+  const raw = document.getElementById("city-data").innerHTML.trim();
+
+  // Unicode-safe Base64 decode
+  function b64DecodeUnicode(str) {
+    const binary = atob(str);
+    const percentEncoded = Array.prototype.map.call(binary, c =>
+      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    ).join('');
+    return decodeURIComponent(percentEncoded);
+  }
+
+  let cities = [];
+  try {
+    const jsonText = b64DecodeUnicode(raw);
+    cities = JSON.parse(jsonText);
+    console.log("Loaded cities:", cities.length);
+  } catch (err) {
+    console.error("Failed to decode/parse city JSON:", err);
+  }
+
+  const input = document.getElementById("site-search");
+  const suggestions = document.getElementById("suggestions");
+  const popularWrapper = document.getElementById("popular-wrapper");
+
+  function renderSuggestion(c) {
+    return `
+      <div class="p-3 hover:bg-gray-100 cursor-pointer border-b"
+           data-slug="${c.slug}">
+        <div class="font-semibold">${c.title}</div>
+        <div class="text-sm text-gray-500">${c.excerpt || ""}</div>
+      </div>
+    `;
+  }
+
+  function search(q) {
+    q = q.toLowerCase();
+    return cities.filter(c =>
+      (c.title + " " + (c.excerpt || "") + " " + (c.state || ""))
+        .toLowerCase()
+        .includes(q)
+    );
+  }
+
+  // Typing handler
+  input.addEventListener("input", e => {
+    const query = e.target.value.trim().toLowerCase();
+
+    if (!query) {
+      suggestions.classList.add("hidden");
+      suggestions.innerHTML = "";
+      popularWrapper.style.display = "block";
+      return;
+    }
+
+    popularWrapper.style.display = "none";
+
+    const results = search(query);
+    suggestions.innerHTML =
+      results.length === 0
+        ? "<div class='p-3 text-sm text-gray-500'>No results found</div>"
+        : results.map(renderSuggestion).join("");
+
+    suggestions.classList.remove("hidden");
+  });
+
+  // Click suggestion → navigate
+  suggestions.addEventListener("click", (e) => {
+    const item = e.target.closest("[data-slug]");
+    if (!item) return;
+    window.location.href = "/city/" + item.dataset.slug;
+  });
+
+  // Press Enter → open first city
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const results = search(input.value.trim());
+      if (results.length > 0) {
+        window.location.href = "/city/" + results[0].slug;
+      }
+    }
+  });
+</script>
