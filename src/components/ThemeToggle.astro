@@ -1,17 +1,20 @@
----
---- 
-<button id="theme-toggle" aria-label="Toggle theme" class="px-3 py-1 border rounded text-sm">
-  Toggle
+<button
+  onclick="window.toggleTheme()"
+  class="p-2 rounded-lg transition-all duration-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+>
+  <span class="icon-light">🌞</span>
+  <span class="icon-dark hidden">🌙</span>
+
+  <style>
+    html.dark .icon-light { display: none; }
+    html.dark .icon-dark { display: inline; }
+  </style>
 </button>
 
-<script>
-  const btn = document.getElementById('theme-toggle');
-  const root = document.documentElement;
-  const current = localStorage.getItem('theme') || 'light';
-  if (current === 'dark') root.classList.add('dark');
-  btn.addEventListener('click', () => {
-    root.classList.toggle('dark');
-    const isDark = root.classList.contains('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  });
+<script is:inline>
+  window.toggleTheme = function () {
+    const html = document.documentElement;
+    html.classList.toggle("dark");
+    localStorage.setItem("theme", html.classList.contains("dark") ? "dark" : "light");
+  }
 </script>

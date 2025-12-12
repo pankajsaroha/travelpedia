@@ -1,0 +1,26 @@
+---
+import "glightbox/dist/css/glightbox.min.css";
+const { images } = Astro.props;
+---
+
+<div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+  {images.map((img) => (
+    <a href={img} class="glightbox-item" data-gallery="city-gallery">
+      <img src={img} class="w-full h-32 md:h-40 object-cover rounded shadow-sm hover:opacity-80 transition" />
+    </a>
+  ))}
+</div>
+
+<script is:inline>
+  import GLightbox from "glightbox";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    GLightbox({
+      selector: ".glightbox-item",
+      touchNavigation: true,
+      loop: true,
+      zoomable: true,
+      autoplayVideos: true,
+    });
+  });
+</script>

@@ -1,11 +1,21 @@
 ---
 const { city } = Astro.props;
 ---
-<article class="card p-4 rounded-lg">
-  <a href={`/city/${city.slug}`} class="block">
-    <img src={city.image || '/images/placeholder-1.svg'} alt={`${city.title} thumbnail`} class="card-img mb-3" />
-    <h3 class="text-xl font-semibold">{city.title}</h3>
-    <p class="text-sm text-muted">{city.state}</p>
-    <p class="mt-2 text-sm text-slate-600">{city.excerpt}</p>
+<article class="rounded-xl shadow-md hover:shadow-xl transition-all bg-white dark:bg-slate-800 p-4 border dark:border-slate-700">
+  <a href={city.slug ? `/city/${city.slug}` : "#"} class="block">
+    <img
+      src={city.image || "/images/placeholder-1.svg"}
+      alt={city.title}
+      class="w-full h-40 object-cover rounded-lg mb-3 hover:scale-[1.02] transition"
+    />
+
+    <h3 class="text-xl font-semibold text-slate-800 dark:text-slate-100">
+      {city.title}
+    </h3>
+
+    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+      {city.excerpt}
+    </p>
   </a>
 </article>
+

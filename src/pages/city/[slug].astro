@@ -1,75 +1,157 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CityMap from '../../components/CityMap.astro';
+import Gallery from "../../components/Gallery.astro";
 
+// Load all cities for SSG
 export async function getStaticPaths() {
   const allCities = Object.values(
     import.meta.glob('../../content/cities/*.md', { eager: true })
-  ).map(mod => mod.frontmatter);
+  ).map((m) => m.frontmatter);
 
-  return allCities.map(city => ({
+  return allCities.map((city) => ({
     params: { slug: city.slug },
-    props: { city }
+    props: { city },
   }));
 }
 
-// Access the `props` from getStaticPaths
 const { city } = Astro.props;
 
-const { slug } = Astro.params;
-const modules = import.meta.glob('../../content/cities/*.md', { eager: true });
-let front = null;
-for (const p in modules) {
-  if (p.endsWith(`/${slug}.md`)) front = modules[p].frontmatter;
-}
-if (!front) throw new Error('City not found');
+// SEO metadata
+const pageTitle = `${city.title} — Travelpedia`;
+const pageDesc = city.excerpt || `${city.title} travel guide: history, places, hotels & more`;
+const heroImage = city.image || "/images/placeholder-1.jpg";
+
+// For image gallery (fallback to hero image)
+const gallery = city.gallery?.length > 0 ? city.gallery : [heroImage];
+
+// For nearby places
+const nearby = [
+  ...(city.bestPlaces || []),
+  ...(city.hiddenPlaces || [])
+];
 ---
 
-<BaseLayout title={front.title} description={front.excerpt}>
-  <div class="grid md:grid-cols-3 gap-6">
-    <div class="md:col-span-2">
-      <img src={front.image || '/images/placeholder-1.jpg'} class="w-full rounded-lg mb-4" alt={front.title} />
-      <h1 class="text-3xl font-bold">{front.title}</h1>
-      <p class="text-muted mt-2">{front.state}</p>
+<BaseLayout title={pageTitle} description={pageDesc}>
 
-      <section class="mt-6">
-        <h2 class="text-2xl font-semibold">History</h2>
-        <div class="mt-2">{front.history}</div>
-      </section>
+  <!-- BREADCRUMBS -->
+  <Breadcrumbs trail={[
+    { label: 'Home', href: '/' },
+    { label: city.state, href: `/state/${city.state}` },
+    { label: city.title, href: '' }
+  ]} />
 
-      <section class="mt-6">
-        <h2 class="text-2xl font-semibold">Top places</h2>
-        <ul class="list-disc pl-6 mt-2">
-          {front.bestPlaces?.map((p) => <li>{p}</li>)}
-        </ul>
-      </section>
-
-      <section class="mt-6">
-        <h2 class="text-2xl font-semibold">Hidden gems</h2>
-        <ul class="list-disc pl-6 mt-2">
-          {front.hiddenPlaces?.map((p) => <li>{p}</li>)}
-        </ul>
-      </section>
-      <section class="mt-10">
-        <h2 class="text-2xl font-semibold mb-4">Nearby Recommended Places</h2>
-        <ul class="list-disc pl-6 space-y-1">
-          {front.bestPlaces?.map(place => <li>{place}</li>)}
-          {front.hiddenPlaces?.map(place => <li>{place}</li>)}
-        </ul>
-      </section>
+  <!-- HERO IMAGE -->
+  <section>
+    <div class="w-full h-64 rounded-lg overflow-hidden">
+      <img src={heroImage} alt={city.title} class="w-full h-full object-cover" />
     </div>
+    <h1 class="text-3xl font-bold mt-4">{city.title}</h1>
+    <p class="text-slate-600 mt-1">{city.state}</p>
+    <p class="mt-3 text-slate-700 text-lg">{city.excerpt}</p>
+  </section>
 
-    <aside class="md:col-span-1">
-      <div class="p-4 card rounded-lg">
-        <h3 class="font-semibold">Distances</h3>
-        <p class="text-sm text-muted mt-2">Airport: {front.distances?.airport}</p>
-        <p class="text-sm text-muted">Railway: {front.distances?.railway}</p>
-        <p class="text-sm text-muted">Bus: {front.distances?.bus}</p>
+  <!-- GRID LAYOUT -->
+  <div class="grid md:grid-cols-3 gap-8 mt-8">
 
-        <h3 class="mt-4 font-semibold">Best Hotels</h3>
-        <ul class="list-disc pl-6 mt-2">
-          {front.bestHotels?.map(h => <li>{h.name} — {h.price}</li>)}
+    <!-- LEFT COLUMN (MAIN CONTENT) -->
+    <main class="md:col-span-2 space-y-8">
+
+      <!-- HISTORY -->
+      <article>
+        <h2 class="text-2xl font-semibold mb-2">History</h2>
+        <p class="text-slate-700 leading-relaxed">{city.history}</p>
+      </article>
+
+      <!-- BEST PLACES -->
+      <article>
+        <h2 class="text-2xl font-semibold mb-2">Top Places to Visit</h2>
+        <ul class="list-disc pl-6 space-y-1 text-slate-700">
+          {city.bestPlaces?.map((p) => <li>{p}</li>)}
         </ul>
-      </div>
+      </article>
+
+      <!-- IMAGE GALLERY -->
+      <article>
+        <h2 class="text-2xl font-semibold mb-3">Image Gallery</h2>
+        <Gallery images={gallery} />
+      </article>
+
+    <section class="mt-8">
+    <h2 class="text-2xl font-semibold mb-3">Map</h2>
+
+    {city.lat && city.lng ? (
+      <CityMap
+        lat={city.lat}
+        lng={city.lng}
+        places={city}
+        height="350px"
+      />
+    ) : (
+      <p class="text-sm text-slate-500">
+        Map coordinates unavailable.
+      </p>
+    )}
+    </section>
+
+
+      <!-- NEARBY PLACES -->
+      <article>
+        <h2 class="text-2xl font-semibold mb-2">Nearby Recommended Places</h2>
+        <ul class="list-disc pl-6 space-y-1 text-slate-700">
+          {nearby.map((p) => <li>{p}</li>)}
+        </ul>
+      </article>
+
+    </main>
+
+    <!-- RIGHT COLUMN (SIDEBAR) -->
+    <aside class="space-y-6">
+
+      <!-- DISTANCES -->
+      <section class="border rounded-lg p-4 shadow-sm bg-white">
+        <h3 class="text-xl font-semibold mb-2">Distances</h3>
+        <p class="text-sm text-slate-700">Airport: {city.distances?.airport}</p>
+        <p class="text-sm text-slate-700">Railway: {city.distances?.railway}</p>
+        <p class="text-sm text-slate-700">Bus Station: {city.distances?.bus}</p>
+      </section>
+
+      <!-- HOTELS -->
+      <section class="border rounded-lg p-4 shadow-sm bg-white">
+        <h3 class="text-xl font-semibold mb-3">Best Hotels</h3>
+        <div class="space-y-3">
+          {city.bestHotels?.map((h) => (
+            <div class="p-3 border rounded-lg hover:shadow transition">
+              <div class="font-medium">{h.name}</div>
+              <div class="text-sm text-slate-600">{h.price}</div>
+              <a class="text-sm text-accent hover:underline mt-1 block" href={h.link || "#"}>
+                View details
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- HOW TO REACH -->
+      <section class="border rounded-lg p-4 shadow-sm bg-white">
+        <h3 class="text-xl font-semibold mb-2">How to Reach</h3>
+        <p class="text-sm text-slate-700 leading-relaxed">{city.howToReach}</p>
+      </section>
+
     </aside>
+
   </div>
+
+<!-- Load Leaflet globally -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script is:inline>
+  const script = document.createElement("script");
+  script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+  script.onload = () => console.log("Leaflet loaded globally");
+  document.body.appendChild(script);
+</script>
+
+
 </BaseLayout>

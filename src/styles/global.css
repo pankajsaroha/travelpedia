@@ -1,0 +1,12 @@
+html {
+  transition: background-color .25s ease, color .25s ease;
+}
+  
+body, .card, .border, .bg-white, .bg-slate-50, .bg-slate-800 {
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+}
+  
+.leaflet-container {
+  background: #f8f8f8 !important;
+}
+  

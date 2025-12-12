@@ -1,141 +1,148 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import CityCard from '../components/CityCard.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CityCard from "../components/CityCard.astro";
 
-// Load all cities from Markdown
+// Load cities
 const cityPages = Object.values(
   import.meta.glob('../content/cities/*.md', { eager: true })
 ).map((m) => m.frontmatter);
 
-// Popular cities
-const popular = cityPages.slice(0, 6);
-
-// Convert JSON → Base64 safely
-const cityPagesJson = JSON.stringify(cityPages);
-const cityPagesBase64 = Buffer.from(cityPagesJson).toString('base64');
+// Featured cities (top 6)
+const featured = cityPages.slice(0, 6);
 ---
 
-<BaseLayout title="Travelpedia — City Guides">
+<BaseLayout title="Travelpedia — Explore Top Cities">
 
-  <!-- HERO SECTION -->
-  <section class="hero mb-8">
-    <div class="max-w-3xl">
-      <h1 class="text-3xl font-bold mb-2">
-        Discover cities — history, sights, hotels & hidden gems
-      </h1>
-      <p class="text-muted">
-        Hand-picked city guides. Fast, modern & SEO-friendly.
-      </p>
+  <!-- PREMIUM HERO SECTION -->
+  <section class="mt-10 mb-16 text-center">
+    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight text-slate-900 dark:text-white">
+      Discover <span class="text-accent">Cities</span>, Adventures & Hidden Gems
+    </h1>
+
+    <p class="mt-4 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+      Explore hand-picked travel guides with history, places to visit, best hotels, tips, and local secrets.
+    </p>
+
+    <!-- SEARCH BAR -->
+    <div class="mt-8 max-w-xl mx-auto relative">
+      <input
+        id="site-search"
+        placeholder="Search for a city…"
+        class="w-full p-4 rounded-xl border dark:border-slate-700 bg-white dark:bg-slate-800 
+               shadow-md focus:ring-2 ring-accent outline-none transition"
+      />
+
+      <div
+        id="suggestions"
+        class="absolute left-0 right-0 bg-white dark:bg-slate-800 border dark:border-slate-700 
+               rounded-xl mt-2 shadow-xl hidden max-h-64 overflow-y-auto z-50"
+      ></div>
     </div>
   </section>
 
-  <!-- SEARCH BAR -->
-  <div class="relative mb-6">
-    <input
-      id="site-search"
-      placeholder="Search cities..."
-      class="w-full p-3 border rounded"
-    />
+  <!-- FEATURED DESTINATIONS -->
+  <section class="mb-16">
+    <h2 class="text-3xl font-bold mb-6 text-slate-900 dark:text-white tracking-tight">
+      Featured Destinations
+    </h2>
 
-    <!-- Suggestions dropdown -->
-    <div
-      id="suggestions"
-      class="absolute left-0 right-0 bg-white border rounded mt-1 shadow-lg hidden
-             max-h-64 overflow-y-auto z-50"
-    ></div>
-  </div>
-
-  <!-- POPULAR CITIES (Homepage only) -->
-  <section id="popular-wrapper" class="mb-8">
-    <h2 class="text-2xl font-bold mb-4">Popular cities</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {popular.map((c) => <CityCard city={c} />)}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      {featured.map((c) => <CityCard city={c} />)}
     </div>
+  </section>
+
+  <!-- THEMATIC COLLECTIONS -->
+  <section class="mb-16">
+    <h2 class="text-3xl font-bold mb-6 text-slate-900 dark:text-white tracking-tight">
+      Travel Themes
+    </h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 shadow-sm hover:shadow-md transition">
+        <h3 class="text-xl font-semibold mb-2">Spiritual Journeys</h3>
+        <p class="text-slate-700 dark:text-slate-300 text-sm">Explore pilgrimage sites, ancient temples & sacred rivers.</p>
+      </div>
+
+      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 shadow-sm hover:shadow-md transition">
+        <h3 class="text-xl font-semibold mb-2">Adventure Destinations</h3>
+        <p class="text-slate-700 dark:text-slate-300 text-sm">Trekking, rafting, camping, mountains & thrilling routes.</p>
+      </div>
+
+      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 shadow-sm hover:shadow-md transition">
+        <h3 class="text-xl font-semibold mb-2">Family Getaways</h3>
+        <p class="text-slate-700 dark:text-slate-300 text-sm">Comfortable trips, scenic places & peaceful escapes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CALL TO ACTION -->
+  <section class="py-16 mt-10 rounded-2xl bg-gradient-to-r from-accent to-accentDark text-white text-center shadow-lg">
+    <h2 class="text-4xl font-bold mb-4">Plan Your Next Journey</h2>
+    <p class="text-lg mb-6 opacity-90">Discover curated guides for every city in India.</p>
+    
+    <a href="/"
+      class="inline-block px-8 py-4 bg-white text-accent font-semibold rounded-xl shadow-md hover:bg-slate-100 transition">
+      Start Exploring
+    </a>
   </section>
 
 </BaseLayout>
 
-<!-- RAW BASE64 DATA INJECTED CLEANLY -->
-<div id="city-data" type="text/plain" hidden set:html={cityPagesBase64}></div>
+<!-- SAFE JSON EMBED FOR SEARCH -->
+<script type="application/json" id="city-data">
+  {JSON.stringify(cityPages)}
+</script>
 
 <!-- SEARCH LOGIC -->
 <script is:inline>
-  const raw = document.getElementById("city-data").innerHTML.trim();
-
-  // Unicode-safe Base64 decode
-  function b64DecodeUnicode(str) {
-    const binary = atob(str);
-    const percentEncoded = Array.prototype.map.call(binary, c =>
-      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-    ).join('');
-    return decodeURIComponent(percentEncoded);
-  }
-
-  let cities = [];
-  try {
-    const jsonText = b64DecodeUnicode(raw);
-    cities = JSON.parse(jsonText);
-    console.log("Loaded cities:", cities.length);
-  } catch (err) {
-    console.error("Failed to decode/parse city JSON:", err);
-  }
+  const dataEl = document.getElementById("city-data");
+  const cities = JSON.parse(dataEl.textContent);
 
   const input = document.getElementById("site-search");
   const suggestions = document.getElementById("suggestions");
-  const popularWrapper = document.getElementById("popular-wrapper");
 
   function renderSuggestion(c) {
     return `
-      <div class="p-3 hover:bg-gray-100 cursor-pointer border-b"
+      <div class="p-3 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer border-b dark:border-slate-700"
            data-slug="${c.slug}">
         <div class="font-semibold">${c.title}</div>
-        <div class="text-sm text-gray-500">${c.excerpt || ""}</div>
+        <div class="text-sm text-slate-500 dark:text-slate-400">${c.excerpt || ""}</div>
       </div>
     `;
   }
 
   function search(q) {
     q = q.toLowerCase();
-    return cities.filter(c =>
-      (c.title + " " + (c.excerpt || "") + " " + (c.state || ""))
-        .toLowerCase()
-        .includes(q)
+    return cities.filter((c) =>
+      (c.title + " " + (c.excerpt || "") + " " + (c.state || "")).toLowerCase().includes(q)
     );
   }
 
-  // Typing handler
-  input.addEventListener("input", e => {
-    const query = e.target.value.trim().toLowerCase();
-
+  input.addEventListener("input", (e) => {
+    const query = e.target.value.trim();
     if (!query) {
       suggestions.classList.add("hidden");
       suggestions.innerHTML = "";
-      popularWrapper.style.display = "block";
       return;
     }
-
-    popularWrapper.style.display = "none";
 
     const results = search(query);
     suggestions.innerHTML =
       results.length === 0
-        ? "<div class='p-3 text-sm text-gray-500'>No results found</div>"
+        ? "<div class='p-3 text-sm text-slate-500 dark:text-slate-400'>No results</div>"
         : results.map(renderSuggestion).join("");
 
     suggestions.classList.remove("hidden");
   });
 
-  // Click suggestion → navigate
   suggestions.addEventListener("click", (e) => {
-    const item = e.target.closest("[data-slug]");
-    if (!item) return;
-    window.location.href = "/city/" + item.dataset.slug;
+    const el = e.target.closest("[data-slug]");
+    if (!el) return;
+    window.location.href = "/city/" + el.dataset.slug;
   });
 
-  // Press Enter → open first city
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-      e.preventDefault();
       const results = search(input.value.trim());
       if (results.length > 0) {
         window.location.href = "/city/" + results[0].slug;

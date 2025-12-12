@@ -1,36 +1,65 @@
---- 
+---
 import ThemeToggle from "../components/ThemeToggle.astro";
 
 const { title, description } = Astro.props;
---- 
+---
+
 <!doctype html>
-<html lang="en" class="antialiased">
+<html lang="en" class="antialiased dark:bg-slate-900">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title ? `${title} — Travelpedia` : 'Travelpedia'}</title>
-    <meta name="description" content={description || 'Travel city guides — history, hotels, hidden gems'} />
+    <title>{title ? `${title} — Travelpedia` : "Travelpedia"}</title>
+
+    <meta
+      name="description"
+      content={description || "Travel city guides — history, hotels, hidden gems"}
+    />
+
     <link rel="icon" href="/favicon.ico" />
     <link rel="stylesheet" href="/src/styles/main.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body { font-family: 'Poppins', sans-serif; }
+    </style>
+
+
+    <!-- Ensure theme loads BEFORE page renders (prevents flicker) -->
+    <script is:inline>
+      (function () {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+        if (stored === "dark" || (!stored && prefersDark)) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
   </head>
-  <body class="min-h-screen font-sans text-slate-900">
-    <header class="py-4 px-6 border-b bg-opacity-40">
+
+  <body
+    class="bg-white text-slate-800 dark:bg-slate-900 dark:text-slate-200 transition-all duration-300 min-h-screen"
+  >
+    <!-- HEADER -->
+    <header class="py-4 px-6 border-b dark:border-slate-700 bg-white dark:bg-slate-800 bg-opacity-40 transition-all">
       <div class="max-w-6xl mx-auto flex items-center justify-between">
-        <a class="header-logo text-2xl" href="/">Travelpedia</a>
+        <a class="header-logo text-2xl font-bold text-accent" href="/">Travelpedia</a>
+
         <nav class="flex items-center gap-4">
-          <a class="text-sm text-muted" href="/about">About</a>
-          <a class="text-sm text-muted" href="/contact">Contact</a>
+          <a class="text-sm text-muted hover:text-accent transition" href="/about">About</a>
+          <a class="text-sm text-muted hover:text-accent transition" href="/contact">Contact</a>
           <ThemeToggle />
         </nav>
       </div>
     </header>
 
-    <main class="p-6 max-w-6xl mx-auto">
+    <!-- MAIN CONTENT -->
+    <main class="px-4 md:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
       <slot />
     </main>
 
-    <footer class="border-t p-4 text-center text-sm text-muted">
-      © {new Date().getFullYear()} Travelpedia
+    <!-- FOOTER -->
+    <footer class="border-t dark:border-slate-700 p-6 text-center text-sm text-slate-500 dark:text-slate-400">
+      © {new Date().getFullYear()} Travelpedia — Find your next adventure
     </footer>
-  </body>
 </html>

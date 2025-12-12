@@ -1,0 +1,86 @@
+---
+const { lat, lng, places, height = "350px" } = Astro.props;
+const title = places?.title || "Location";
+---
+<div
+  id="city-map"
+  style={`height:${height};`}
+  class="w-full rounded-lg border overflow-hidden"
+  data-lat={lat}
+  data-lng={lng}
+  data-title={title}
+></div>
+
+<script is:inline>
+  console.log("CityMap script running (dataset approach)…");
+
+  function initMapOnceReady() {
+    const container = document.getElementById("city-map");
+    if (!container) {
+      // not yet rendered
+      return false;
+    }
+
+    // read coordinates from data attributes (strings)
+    const latAttr = container.dataset.lat;
+    const lngAttr = container.dataset.lng;
+    const titleAttr = container.dataset.title || "Location";
+
+    // sanity check
+    if (!latAttr || !lngAttr) {
+      console.warn("CityMap: lat/lng missing in data attributes");
+      return false;
+    }
+
+    const LAT = Number(latAttr);
+    const LNG = Number(lngAttr);
+
+    if (Number.isNaN(LAT) || Number.isNaN(LNG)) {
+      console.error("CityMap: invalid lat/lng", latAttr, lngAttr);
+      return false;
+    }
+
+    if (!window.L) {
+      // Leaflet not loaded yet
+      return false;
+    }
+
+    // make sure map wasn't already initialized
+    if (container.classList.contains("leaflet-container")) {
+      console.log("CityMap: already initialized");
+      return true;
+    }
+
+    console.log("CityMap: initializing Leaflet map for", LAT, LNG);
+
+    const L = window.L;
+    const map = L.map("city-map").setView([LAT, LNG], 12);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap contributors",
+    }).addTo(map);
+
+    L.marker([LAT, LNG])
+      .addTo(map)
+      .bindPopup("<b>" + (titleAttr) + "</b>")
+      .openPopup();
+
+    return true;
+  }
+
+  // Poll until ready (DOM + Leaflet). 50 tries × 100ms = 5s.
+  let tries = 0;
+  const maxTries = 50;
+  const timer = setInterval(() => {
+    tries++;
+    const ok = initMapOnceReady();
+    if (ok) {
+      clearInterval(timer);
+      console.log("CityMap: initialized successfully");
+    } else if (tries >= maxTries) {
+      clearInterval(timer);
+      console.error("CityMap: failed to initialize after", maxTries, "attempts");
+    }
+  }, 100);
+</script>
