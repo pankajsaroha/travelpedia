@@ -20,7 +20,15 @@ bestHotels:
     name: "Auli Resort"
     price: "₹3000–₹8000"
     link: ""
-image: "/images/placeholder-2.svg"
+#image: "/images/placeholder-2.svg"
+imageGallery:
+  - "/images/auli/auli1.jpeg"
+  - "/images/auli/auli2.jpeg"
+  - "/images/auli/auli3.jpeg"
+  - "/images/auli/auli4.jpeg"
+
+lat: 30.5287
+lng: 79.5603  
 ---
 
 Write extended content here in Markdown.

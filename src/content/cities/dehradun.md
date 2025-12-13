@@ -20,7 +20,15 @@ bestHotels:
     name: "Lemon Tree Hotel"
     price: "₹2500–₹4500"
     link: ""
-image: "/images/placeholder-2.svg"
+#image: "/images/placeholder-2.svg"
+imageGallery:
+  - "/images/dehradun/dehradun1.jpg"
+  - "/images/dehradun/dehradun2.jpeg"
+  - "/images/dehradun/dehradun3.jpeg"
+  - "/images/dehradun/dehradun4.jpeg"
+
+lat: 30.3165
+lng: 78.0322
 ---
 
 Write extended content here in Markdown.

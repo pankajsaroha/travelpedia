@@ -22,7 +22,13 @@ bestHotels:
     name: "Various Dharamshalas"
     price: "₹0–₹2000"
     link: ""
-image: "/images/placeholder-1.svg"
+#image: "/images/placeholder-1.svg"
+imageGallery:
+  - "/images/chotachardham/chotachardham1.jpeg"
+  - "/images/chotachardham/chotachardham2.jpeg"
+  - "/images/chotachardham/chotachardham3.jpeg"
+  - "/images/chotachardham/chotachardham4.jpeg"
+  - "/images/chotachardham/chotachardham5.jpeg"
 ---
 
 Write extended content here in Markdown.

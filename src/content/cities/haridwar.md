@@ -31,7 +31,14 @@ bestHotels:
     price: "₹2000–₹4000"
     link: "#"
 
-image: "/images/placeholder-1.svg"
+#image: "/images/placeholder-1.svg"
+imageGallery:
+  - "/images/haridwar/haridwar1.jpeg"
+  - "/images/haridwar/haridwar2.jpeg"
+  - "/images/haridwar/haridwar3.jpeg"
+  - "/images/haridwar/haridwar4.jpeg"
+  - "/images/haridwar/haridwar5.jpeg"
+  - "/images/haridwar/haridwar6.jpg"
 
 lat: 30.0889
 lng: 78.2676

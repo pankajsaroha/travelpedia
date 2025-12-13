@@ -1,0 +1,25 @@
+---
+const { images, title } = Astro.props;
+---
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+  {images.map((img) => (
+    <a href={img} class="glightbox block">
+      <img src={img} alt={title} class="w-full h-40 object-cover rounded-xl shadow-md hover:opacity-80 transition" />
+    </a>
+  ))}
+</div>
+
+<script type="module">
+  import GLightbox from "https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js";
+
+  GLightbox({
+    selector: ".glightbox",
+    loop: true,
+    touchNavigation: true,
+    zoomable: true,
+  });
+</script>
+

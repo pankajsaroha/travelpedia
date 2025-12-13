@@ -20,7 +20,15 @@ bestHotels:
     name: "Forest Guest House"
     price: "₹800–₹2000"
     link: ""
-image: "/images/placeholder-3.svg"
+#image: "/images/placeholder-3.svg"
+imageGallery:
+  - "/images/auli/auli1.jpeg"
+  - "/images/auli/auli2.jpeg"
+  - "/images/auli/auli3.jpeg"
+  - "/images/auli/auli4.jpeg"
+
+lat: 30.9940
+lng: 78.9410
 ---
 
 Write extended content here in Markdown.

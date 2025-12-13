@@ -21,7 +21,17 @@ bestHotels:
     name: "The Claridges Nabha"
     price: "₹5000–₹10000"
     link: ""
-image: "/images/placeholder-2.svg"
+#image: "/images/placeholder-2.svg"
+imageGallery:
+  - "/images/mussoorie/mussoorie1.jpeg"
+  - "/images/mussoorie/mussoorie2.jpg"
+  - "/images/mussoorie/mussoorie3.avif"
+  - "/images/mussoorie/mussoorie4.jpg"
+  - "/images/mussoorie/mussoorie5.jpeg"
+  - "/images/mussoorie/mussoorie6.jpeg"
+
+lat: 30.4599
+lng: 78.0632
 ---
 
 Write extended content here in Markdown.
