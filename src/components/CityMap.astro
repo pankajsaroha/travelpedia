@@ -1,86 +1,118 @@
 ---
-const { lat, lng, places, height = "350px" } = Astro.props;
-const title = places?.title || "Location";
+const { lat, lng, places, height = "400px" } = Astro.props;
+
+// Build marker list
+const allMarkers = [];
+
+// Main city location
+allMarkers.push({ name: places.title, lat, lng });
+
+// Best places
+places.placeCoords?.forEach((p) => allMarkers.push(p));
+
+// Hidden places
+places.hiddenPlacesCoords?.forEach((p) => allMarkers.push(p));
 ---
+
 <div
   id="city-map"
-  style={`height:${height};`}
-  class="w-full rounded-lg border overflow-hidden"
-  data-lat={lat}
-  data-lng={lng}
-  data-title={title}
-></div>
+  class="rounded-2xl shadow-xl border dark:border-slate-700 overflow-hidden"
+  style={`height:${height}`}>
+</div>
 
-<script is:inline>
-  console.log("CityMap script running (dataset approach)…");
+<script client:load define:vars={{ allMarkers }}>
+  const interval = setInterval(() => {
+    if (!window.L) return;
 
-  function initMapOnceReady() {
-    const container = document.getElementById("city-map");
-    if (!container) {
-      // not yet rendered
-      return false;
-    }
+    const mapBox = document.getElementById("city-map");
+    if (!mapBox) return;
 
-    // read coordinates from data attributes (strings)
-    const latAttr = container.dataset.lat;
-    const lngAttr = container.dataset.lng;
-    const titleAttr = container.dataset.title || "Location";
-
-    // sanity check
-    if (!latAttr || !lngAttr) {
-      console.warn("CityMap: lat/lng missing in data attributes");
-      return false;
-    }
-
-    const LAT = Number(latAttr);
-    const LNG = Number(lngAttr);
-
-    if (Number.isNaN(LAT) || Number.isNaN(LNG)) {
-      console.error("CityMap: invalid lat/lng", latAttr, lngAttr);
-      return false;
-    }
-
-    if (!window.L) {
-      // Leaflet not loaded yet
-      return false;
-    }
-
-    // make sure map wasn't already initialized
-    if (container.classList.contains("leaflet-container")) {
-      console.log("CityMap: already initialized");
-      return true;
-    }
-
-    console.log("CityMap: initializing Leaflet map for", LAT, LNG);
+    clearInterval(interval);
 
     const L = window.L;
-    const map = L.map("city-map").setView([LAT, LNG], 12);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    // PREMIUM CARTO VOYAGER TILES
+    const lightTiles =
+      "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+    const darkTiles =
+      "https://basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png";
+
+    const isDark = document.documentElement.classList.contains("dark");
+
+    // Create map
+    const map = L.map("city-map", { zoomControl: false });
+
+    // Set initial center BEFORE adding layers
+    map.setView([allMarkers[0].lat, allMarkers[0].lng], 13);
+
+    // Add tile layer
+    L.tileLayer(isDark ? darkTiles : lightTiles, {
       maxZoom: 19,
-      attribution: "&copy; OpenStreetMap contributors",
+      attribution: "&copy; OpenStreetMap | Carto",
     }).addTo(map);
 
-    L.marker([LAT, LNG])
-      .addTo(map)
-      .bindPopup("<b>" + (titleAttr) + "</b>")
-      .openPopup();
+    // PREMIUM CIRCLE MARKER ICON
+    const pinIcon = L.icon({
+      iconUrl: "/images/pin-premium.png",
+      iconRetinaUrl: "/images/pin-premium@2x.png",
+      iconSize: [36, 36],
+      iconAnchor: [18, 36],
+      popupAnchor: [0, -26],
+      className: "premium-marker"
+    });
 
-    return true;
-  }
+    const bounds = [];
 
-  // Poll until ready (DOM + Leaflet). 50 tries × 100ms = 5s.
-  let tries = 0;
-  const maxTries = 50;
-  const timer = setInterval(() => {
-    tries++;
-    const ok = initMapOnceReady();
-    if (ok) {
-      clearInterval(timer);
-      console.log("CityMap: initialized successfully");
-    } else if (tries >= maxTries) {
-      clearInterval(timer);
-      console.error("CityMap: failed to initialize after", maxTries, "attempts");
+    allMarkers.forEach((loc) => {
+      const marker = L.marker([loc.lat, loc.lng], { icon: pinIcon }).addTo(map);
+
+      marker.bindPopup(`
+        <div style="font-weight:600; margin-bottom:4px;">${loc.name}</div>
+        <a href="https://www.google.com/maps?q=${loc.lat},${loc.lng}"
+           target="_blank"
+           class="text-accent underline">
+           Open in Google Maps
+        </a>
+      `);
+
+      bounds.push([loc.lat, loc.lng]);
+
+      // Small entrance animation
+      setTimeout(() => {
+        if (marker._icon) {
+          marker._icon.style.transition = "transform 0.25s ease";
+          marker._icon.style.transform = "scale(1.2)";
+          setTimeout(() => {
+            marker._icon.style.transform = "scale(1)";
+          }, 200);
+        }
+      }, 80);
+    });
+
+    // Fit all markers
+    if (bounds.length > 1) {
+      map.flyToBounds(bounds, { padding: [60, 60], duration: 1.2 });
+    } else {
+      map.setView(bounds[0], 13);
     }
-  }, 100);
+  }, 120);
 </script>
+
+<style>
+  /* Circle pin glow when hovered */
+  .premium-marker:hover {
+    filter: drop-shadow(0px 0px 6px #0ea5a4aa);
+  }
+</style>
+
+<style>
+.premium-marker {
+  transition: filter 0.25s ease, transform 0.25s ease;
+}
+
+.premium-marker:hover {
+  filter: drop-shadow(0 0 8px #0ea5a4aa);
+  transform: scale(1.05);
+}
+</style>
+

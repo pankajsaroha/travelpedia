@@ -21,7 +21,19 @@ bestHotels:
     name: "Ganga Kinare"
     price: "₹3000–₹6000"
     link: ""
-image: "/images/placeholder-2.svg"
+#image: "/images/placeholder-2.svg"
+imageGallery:
+  - "/images/rishikesh/rishikesh1.jpeg"
+  - "/images/rishikesh/rishikesh2.jpeg"
+  - "/images/rishikesh/rishikesh3.jpeg"
+  - "/images/rishikesh/rishikesh4.jpeg"
+  - "/images/rishikesh/rishikesh5.jpeg"
+  - "/images/rishikesh/rishikesh6.jpeg"
+  - "/images/rishikesh/rishikesh7.jpeg"
+  - "/images/rishikesh/rishikesh8.jpeg"
+
+lat: 30.0869
+lng: 78.2676
 ---
 
 Write extended content here in Markdown.

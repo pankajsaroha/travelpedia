@@ -20,7 +20,15 @@ bestHotels:
     name: "Pilgrim Dharamshala"
     price: "₹500–₹1500"
     link: ""
-image: "/images/placeholder-3.svg"
+#image: "/images/placeholder-3.svg"
+imageGallery:
+  - "/images/kedarnath/kedarnath1.jpeg"
+  - "/images/kedarnath/kedarnath2.jpeg"
+  - "/images/kedarnath/kedarnath3.jpeg"
+  - "/images/kedarnath/kedarnath4.jpeg"
+
+lat: 30.7346
+lng: 79.0669
 ---
 
 Write extended content here in Markdown.

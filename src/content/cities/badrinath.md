@@ -20,7 +20,15 @@ bestHotels:
     name: "Hotel Bhandari"
     price: "₹1500–₹3500"
     link: ""
-image: "/images/placeholder-3.svg"
+#image: "/images/placeholder-3.svg"
+imageGallery:
+  - "/images/badrinath/badrinath1.jpg"
+  - "/images/badrinath/badrinath2.jpg"
+  - "/images/badrinath/badrinath3.jpg"
+  - "/images/badrinath/badrinath4.jpeg"
+
+lat: 30.7433
+lng: 79.4930  
 ---
 
 Write extended content here in Markdown.

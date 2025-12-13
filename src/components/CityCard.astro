@@ -1,21 +1,125 @@
 ---
 const { city } = Astro.props;
----
-<article class="rounded-xl shadow-md hover:shadow-xl transition-all bg-white dark:bg-slate-800 p-4 border dark:border-slate-700">
-  <a href={city.slug ? `/city/${city.slug}` : "#"} class="block">
-    <img
-      src={city.image || "/images/placeholder-1.svg"}
-      alt={city.title}
-      class="w-full h-40 object-cover rounded-lg mb-3 hover:scale-[1.02] transition"
-    />
 
-    <h3 class="text-xl font-semibold text-slate-800 dark:text-slate-100">
+// Dynamic image gallery fallback
+const images = city.imageGallery?.length
+  ? city.imageGallery
+  : [city.image || "/images/placeholder-1.svg"];
+---
+
+<div class="rounded-2xl overflow-hidden shadow-xl bg-white dark:bg-slate-800 hover:shadow-2xl transition">
+
+  <!-- SLIDER WRAPPER WITH ROUNDED CORNERS -->
+  <div class="relative rounded-2xl overflow-hidden">
+
+    <!-- SWIPER SLIDER -->
+    <swiper-container
+      class="h-48 w-full rounded-2xl"
+      pagination="true"
+      pagination-clickable="true"
+      autoplay="true"
+      loop="true"
+      speed="600"
+      effect="slide"
+    >
+      {images.map((img) => (
+        <swiper-slide>
+          <div class="relative h-48 w-full overflow-hidden">
+
+            <!-- IMAGE WITH PREMIUM ZOOM EFFECT -->
+            <img
+              src={img}
+              alt={city.title}
+              class="w-full h-48 object-cover transform transition-transform duration-700 card-zoom-img"
+            />
+
+            <!-- GRADIENT OVERLAY FOR READABILITY -->
+            <div class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t
+                        from-black/60 to-transparent pointer-events-none"></div>
+
+          </div>
+        </swiper-slide>
+      ))}
+    </swiper-container>
+
+    <!-- AIRBNB-STYLE PAGINATION DOTS BELOW IMAGE -->
+    <div class="swiper-pagination custom-pagination mt-2"></div>
+
+  </div>
+
+  <!-- CARD CONTENT -->
+  <div class="p-4">
+    <h3 class="text-lg font-semibold text-slate-900 dark:text-white">
       {city.title}
     </h3>
 
-    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+    <p class="text-sm text-slate-600 dark:text-slate-400">
       {city.excerpt}
     </p>
-  </a>
-</article>
 
+    <a 
+      href={`/city/${city.slug}`}
+      class="mt-3 inline-block text-accent font-medium hover:underline"
+    >
+      Explore →
+    </a>
+  </div>
+</div>
+
+<!-- SWIPER CDN -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+/>
+<script
+  src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"
+  client:load
+></script>
+
+<style>
+  /* ------------ IMAGE ZOOM EFFECT ------------ */
+  swiper-slide:hover .card-zoom-img {
+    transform: scale(1.08);
+  }
+
+  /* ------------ AIRBNB-STYLE DOTS ------------ */
+  .custom-pagination {
+    text-align: center;
+    position: relative;
+  }
+
+/* --- PREMIUM PAGINATION DOTS --- */
+
+  /* Base dot */
+  swiper-container::part(bullet) {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background: #00000066; /* light mode */
+    margin: 0 4px;
+    opacity: 1;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  /* Dark mode base dot */
+  html.dark swiper-container::part(bullet) {
+    background: #ffffff66; /* dark mode */
+  }
+
+  /* ACTIVE dot (this was blue before → now fixed) */
+  swiper-container::part(bullet-active) {
+    background: #0ea5a4 !important; /* your accent color */
+    transform: scale(1.25);
+  }
+
+  /* ------------ REMOVE DEFAULT DOTS INSIDE SLIDER ------------ */
+  .swiper-pagination {
+    bottom: -24px !important; /* push dots OUTSIDE image */
+    position: relative !important;
+  }
+
+  /* Rounded slider edges */
+  swiper-container::part(container) {
+    border-radius: 1rem;
+  }
+</style>
