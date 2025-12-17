@@ -1,0 +1,15 @@
+---
+const { city } = Astro.props;
+---
+
+<div class="space-y-4">
+  <h3 class="text-lg font-semibold">Quick Facts</h3>
+
+  <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-2">
+    <li>🌤 Best time: {city.bestTime}</li>
+    <li>🗓 Ideal stay: {city.idealDays} days</li>
+    <li>✈ Airport: {city.distances?.airport}</li>
+    <li>🚆 Railway: {city.distances?.railway}</li>
+    <li>💰 Budget: {city.budgetRange}</li>
+  </ul>
+</div>

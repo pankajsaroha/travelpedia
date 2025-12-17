@@ -1,0 +1,206 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import CityMap from "../../components/CityMap.astro";
+import LightGallery from "../../components/LightGallery.astro";
+import PlaceCarousel from "../../components/PlaceCarousel.astro";
+import PlaceQuickFacts from "../../components/PlaceQuickFacts.astro";
+
+export async function getStaticPaths() {
+  const placeFiles = import.meta.glob('../../content/places/**/*.md', {
+    eager: true
+  });
+
+  console.log(
+    'PLACE FILES FOUND:',
+    Object.keys(placeFiles)
+  );
+
+  return Object.values(placeFiles).map((mod) => {
+    const place = mod.frontmatter;
+
+    if (!place?.slug) {
+      throw new Error(`Missing slug in place file: ${mod.file}`);
+    }
+
+    return {
+      params: { slug: place.slug },
+      props: { place }
+    };
+  });
+}
+
+const { place } = Astro.props;
+
+const pageTitle = `${place.title} — Travelpedia`;
+const pageDesc = place.excerpt || place.title;
+
+// HERO IMAGES (priority order)
+const heroImages =
+  place.images?.length > 0
+    ? place.images
+    : place.gallery?.length > 0
+      ? place.gallery
+      : [place.image || "/images/placeholder-1.svg"];
+
+// Gallery (below)
+const galleryImages = place.gallery?.length
+  ? place.gallery
+  : heroImages;
+---
+
+<BaseLayout title={pageTitle} description={pageDesc}>
+
+  <!-- HERO SLIDER -->
+  <section class="rounded-2xl overflow-hidden shadow-lg mb-12">
+    <swiper-container
+      class="w-full h-80 md:h-[420px] rounded-2xl"
+      pagination="true"
+      pagination-clickable="true"
+      autoplay="true"
+      loop="true"
+      speed="700"
+    >
+      {heroImages.map((img) => (
+        <swiper-slide>
+          <div class="relative w-full h-80 md:h-[420px] overflow-hidden">
+            <img
+              src={img}
+              alt={place.title}
+              class="w-full h-full object-cover transition-transform duration-700 hero-zoom"
+            />
+            <div
+              class="absolute bottom-0 left-0 right-0 h-32
+                     bg-gradient-to-t from-black/60 to-transparent"
+            ></div>
+          </div>
+        </swiper-slide>
+      ))}
+    </swiper-container>
+  </section>
+
+  <!-- TITLE -->
+  <section class="mb-10">
+    <Breadcrumbs trail={[
+      { label: "Home", href: "/" },
+      { label: place.city, href: `/city/${place.citySlug}` },
+      { label: place.title, href: "" }
+    ]} />
+
+    <h1 class="text-4xl font-extrabold mt-4">
+      {place.title}
+    </h1>
+
+    <p class="mt-3 text-lg text-slate-600 dark:text-slate-300 max-w-3xl">
+      {place.excerpt}
+    </p>
+  </section>
+
+  <!-- QUICK FACTS -->
+  <section class="mb-16">
+    <PlaceQuickFacts place={place} />
+  </section>
+
+  <!-- CONTENT -->
+  <div class="grid md:grid-cols-3 gap-12">
+
+    <!-- MAIN -->
+    <main class="md:col-span-2 space-y-16">
+
+      <!-- ABOUT -->
+      <section>
+        <h2 class="text-2xl font-bold mb-4">
+          About {place.title}
+        </h2>
+        <p class="leading-relaxed text-slate-700 dark:text-slate-300">
+          {place.history}
+        </p>
+      </section>
+
+      <!-- GALLERY -->
+      <section>
+        <h2 class="text-2xl font-bold mb-4">Gallery</h2>
+        <LightGallery images={galleryImages} title={place.title} />
+      </section>
+
+      <!-- MAP -->
+      {place.lat && place.lng && (
+        <section>
+          <h2 class="text-2xl font-bold mb-4">Location</h2>
+          <CityMap
+            lat={place.lat}
+            lng={place.lng}
+            title={place.title}
+            height="400px"
+          />
+        </section>
+      )}
+
+      <!-- HOW TO REACH -->
+      {place.howToReach && (
+        <section>
+          <h2 class="text-2xl font-bold mb-4">How to Reach</h2>
+          <p class="text-slate-700 dark:text-slate-300">
+            {place.howToReach}
+          </p>
+        </section>
+      )}
+
+      <!-- NEARBY -->
+      {place.nearbyPlaces?.length > 0 && (
+        <PlaceCarousel
+          title="Nearby Places"
+          places={place.nearbyPlaces}
+        />
+      )}
+
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="space-y-10">
+
+      <section class="p-6 rounded-2xl bg-white dark:bg-slate-800 border">
+        <h3 class="text-lg font-semibold mb-3">Tips</h3>
+        <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-2">
+          <li>✔ Best visited early morning</li>
+          <li>✔ Weekdays are less crowded</li>
+          <li>✔ Carry water & sunscreen</li>
+        </ul>
+      </section>
+
+    </aside>
+
+  </div>
+
+</BaseLayout>
+
+<!-- Swiper -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+/>
+<script
+  src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"
+  client:load
+></script>
+
+<style>
+  swiper-slide:hover .hero-zoom {
+    transform: scale(1.05);
+  }
+
+  swiper-container::part(bullet) {
+    width: 8px;
+    height: 8px;
+    background: #00000066;
+  }
+
+  html.dark swiper-container::part(bullet) {
+    background: #ffffff66;
+  }
+
+  swiper-container::part(bullet-active) {
+    background: #0ea5a4;
+    transform: scale(1.25);
+  }
+</style>

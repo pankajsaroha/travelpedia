@@ -1,0 +1,10 @@
+---
+const { place } = Astro.props;
+---
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+  <div>🌤 Best time<br /><strong>{place.bestTime}</strong></div>
+  <div>⏱ Duration<br /><strong>{place.duration}</strong></div>
+  <div>🎟 Entry fee<br /><strong>{place.entryFee || "Free"}</strong></div>
+  <div>👥 Crowd<br /><strong>{place.crowdLevel}</strong></div>
+</div>
