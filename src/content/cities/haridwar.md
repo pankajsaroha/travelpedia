@@ -10,12 +10,42 @@ history: |
   (write more content here)
 
 bestPlaces:
-  - "Har Ki Pauri"
-  - "Mansa Devi Temple"
+  - slug: har-ki-pauri
+    title: Har Ki Pauri
+    excerpt: Sacred ghat on the banks of the Ganges
+    images:
+      - /images/haridwar/places/har-ki-pauri-3.jpg
+      - /images/haridwar/places/har-ki-pauri-4.jpg
+      - /images/haridwar/places/har-ki-pauri-2.jpg
+      - /images/haridwar/places/har-ki-pauri-1.jpg
+
+  - slug: mansa-devi
+    title: Mansa Devi Temple
+    excerpt: Hilltop temple with panoramic views
+    images:
+      - /images/haridwar/places/mansa-devi-1.jpg
+      - /images/haridwar/places/mansa-devi-2.jpg
+
+  - slug: ganga-aarti
+    title: Ganga Aarti
+    excerpt: Sacred Ganga Aarti
+    images:
+      - /images/haridwar/places/har-ki-pauri-1.jpg
+      - /images/haridwar/places/har-ki-pauri-2.jpg
+
+
 
 hiddenPlaces:
-  - "Shantikunj"
-  - "Sapt Rishi Ashram"
+  - slug: Shantikunj
+    title: ShantiKunj
+    excerpt: Shantikunj Meditation
+    images:
+      - /images/haridwar/places/har-ki-pauri-2.jpg
+  - slug: Sapt Rishi Ashram
+    title: Sapt Rishi Ashram
+    excerpt: Ashram
+    images:
+      - /images/haridwar/places/har-ki-pauri-2.jpg
 
 distances:
   airport: "30 km (Jolly Grant, Dehradun)"
@@ -33,12 +63,10 @@ bestHotels:
 
 #image: "/images/placeholder-1.svg"
 imageGallery:
-  - "/images/haridwar/haridwar1.jpeg"
-  - "/images/haridwar/haridwar2.jpeg"
-  - "/images/haridwar/haridwar3.jpeg"
-  - "/images/haridwar/haridwar4.jpeg"
-  - "/images/haridwar/haridwar5.jpeg"
-  - "/images/haridwar/haridwar6.jpg"
+  - /images/haridwar/places/har-ki-pauri-1.jpg
+  - /images/haridwar/places/har-ki-pauri-3.jpg
+  - /images/haridwar/places/har-ki-pauri-4.jpg
+  - /images/haridwar/places/mansa-devi-2.jpg
 
 lat: 30.0889
 lng: 78.2676

@@ -253,6 +253,22 @@ declare module 'astro:content' {
   data: any
 } & { render(): Render[".md"] };
 };
+"places": {
+"ganga-aarti.md": {
+	id: "ganga-aarti.md";
+  slug: "ganga-aarti";
+  body: string;
+  collection: "places";
+  data: any
+} & { render(): Render[".md"] };
+"har-ki-pauri.md": {
+	id: "har-ki-pauri.md";
+  slug: "har-ki-pauri";
+  body: string;
+  collection: "places";
+  data: any
+} & { render(): Render[".md"] };
+};
 
 	};
 

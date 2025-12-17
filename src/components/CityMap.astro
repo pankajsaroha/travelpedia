@@ -1,118 +1,114 @@
 ---
-const { lat, lng, places, height = "400px" } = Astro.props;
+const {
+  lat,
+  lng,
+  height = "400px",
+  title = "Location",
+  markers = []
+} = Astro.props;
 
-// Build marker list
 const allMarkers = [];
 
-// Main city location
-allMarkers.push({ name: places.title, lat, lng });
+if (lat && lng) {
+  allMarkers.push({ name: title, lat, lng });
+}
 
-// Best places
-places.placeCoords?.forEach((p) => allMarkers.push(p));
-
-// Hidden places
-places.hiddenPlacesCoords?.forEach((p) => allMarkers.push(p));
+markers.forEach(m => {
+  if (m.lat && m.lng) {
+    allMarkers.push(m);
+  }
+});
 ---
 
 <div
-  id="city-map"
-  class="rounded-2xl shadow-xl border dark:border-slate-700 overflow-hidden"
-  style={`height:${height}`}>
-</div>
+  class="city-map w-full rounded-2xl overflow-hidden border dark:border-slate-700"
+  style={`height:${height}`}
+  data-lat={lat}
+  data-lng={lng}
+  data-markers={JSON.stringify(allMarkers)}
+></div>
 
-<script client:load define:vars={{ allMarkers }}>
-  const interval = setInterval(() => {
-    if (!window.L) return;
+<script client:load>
+(function () {
+  const container = document.currentScript.previousElementSibling;
 
-    const mapBox = document.getElementById("city-map");
-    if (!mapBox) return;
+  if (!container) return;
 
-    clearInterval(interval);
-
-    const L = window.L;
-
-    // PREMIUM CARTO VOYAGER TILES
-    const lightTiles =
-      "https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
-    const darkTiles =
-      "https://basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png";
-
-    const isDark = document.documentElement.classList.contains("dark");
-
-    // Create map
-    const map = L.map("city-map", { zoomControl: false });
-
-    // Set initial center BEFORE adding layers
-    map.setView([allMarkers[0].lat, allMarkers[0].lng], 13);
-
-    // Add tile layer
-    L.tileLayer(isDark ? darkTiles : lightTiles, {
-      maxZoom: 19,
-      attribution: "&copy; OpenStreetMap | Carto",
-    }).addTo(map);
-
-    // PREMIUM CIRCLE MARKER ICON
-    const pinIcon = L.icon({
-      iconUrl: "/images/pin-premium.png",
-      iconRetinaUrl: "/images/pin-premium@2x.png",
-      iconSize: [36, 36],
-      iconAnchor: [18, 36],
-      popupAnchor: [0, -26],
-      className: "premium-marker"
-    });
-
-    const bounds = [];
-
-    allMarkers.forEach((loc) => {
-      const marker = L.marker([loc.lat, loc.lng], { icon: pinIcon }).addTo(map);
-
-      marker.bindPopup(`
-        <div style="font-weight:600; margin-bottom:4px;">${loc.name}</div>
-        <a href="https://www.google.com/maps?q=${loc.lat},${loc.lng}"
-           target="_blank"
-           class="text-accent underline">
-           Open in Google Maps
-        </a>
-      `);
-
-      bounds.push([loc.lat, loc.lng]);
-
-      // Small entrance animation
-      setTimeout(() => {
-        if (marker._icon) {
-          marker._icon.style.transition = "transform 0.25s ease";
-          marker._icon.style.transform = "scale(1.2)";
-          setTimeout(() => {
-            marker._icon.style.transform = "scale(1)";
-          }, 200);
-        }
-      }, 80);
-    });
-
-    // Fit all markers
-    if (bounds.length > 1) {
-      map.flyToBounds(bounds, { padding: [60, 60], duration: 1.2 });
-    } else {
-      map.setView(bounds[0], 13);
+  function waitForLeaflet(cb) {
+    if (window.L && window.L.markerClusterGroup) {
+      cb();
+      return;
     }
-  }, 120);
-</script>
-
-<style>
-  /* Circle pin glow when hovered */
-  .premium-marker:hover {
-    filter: drop-shadow(0px 0px 6px #0ea5a4aa);
+    const t = setInterval(() => {
+      if (window.L && window.L.markerClusterGroup) {
+        clearInterval(t);
+        cb();
+      }
+    }, 50);
   }
-</style>
 
-<style>
-.premium-marker {
-  transition: filter 0.25s ease, transform 0.25s ease;
-}
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (!entries[0].isIntersecting) return;
+      observer.disconnect();
 
-.premium-marker:hover {
-  filter: drop-shadow(0 0 8px #0ea5a4aa);
-  transform: scale(1.05);
-}
-</style>
+      waitForLeaflet(() => {
+        const lat = parseFloat(container.dataset.lat);
+        const lng = parseFloat(container.dataset.lng);
+        const markers = JSON.parse(container.dataset.markers || "[]");
 
+        const isDark = document.documentElement.classList.contains("dark");
+
+        const tileUrl = isDark
+          ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+          : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
+        const map = L.map(container).setView([lat, lng], 13);
+
+        L.tileLayer(tileUrl, {
+          attribution: "© OpenStreetMap, © CartoDB"
+        }).addTo(map);
+
+        // ---------------------------
+        // GOOGLE MAPS LEAFLET CONTROL
+        // ---------------------------
+        const GoogleMapsControl = L.Control.extend({
+          options: { position: "topright" },
+
+          onAdd: function () {
+            const el = L.DomUtil.create(
+              "a",
+              "leaflet-control bg-white/90 dark:bg-slate-800 px-3 py-1.5 text-xs font-medium rounded-lg shadow"
+            );
+
+            el.href = `https://www.google.com/maps?q=${lat},${lng}`;
+            el.target = "_blank";
+            el.innerHTML = "Open in Google Maps →";
+
+            L.DomEvent.disableClickPropagation(el);
+            return el;
+          }
+        });
+
+        map.addControl(new GoogleMapsControl());
+
+        // ---------------------------
+        // MARKER CLUSTERING
+        // ---------------------------
+        const cluster = L.markerClusterGroup();
+
+        markers.forEach(m => {
+          cluster.addLayer(
+            L.marker([m.lat, m.lng]).bindPopup(m.name)
+          );
+        });
+
+        map.addLayer(cluster);
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  observer.observe(container);
+})();
+</script>

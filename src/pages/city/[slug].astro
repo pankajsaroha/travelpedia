@@ -2,9 +2,11 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Breadcrumbs from "../../components/Breadcrumbs.astro";
 import CityMap from "../../components/CityMap.astro";
-import LightGallery from "../../components/LightGallery.astro";
+import PlaceCarousel from "../../components/PlaceCarousel.astro";
+import TopPlacesGrid from "../../components/TopPlacesGrid.astro";
+import CityQuickFacts from "../../components/CityQuickFacts.astro";
 
-// Load all cities for SSG
+// SSG
 export async function getStaticPaths() {
   const allCities = Object.values(
     import.meta.glob('../../content/cities/*.md', { eager: true })
@@ -22,203 +24,103 @@ const pageTitle = `${city.title} — Travelpedia`;
 const pageDesc = city.excerpt || `${city.title} travel guide`;
 const heroImage = city.image || "/images/placeholder-1.svg";
 
-// Use gallery from markdown if available
 const galleryImages = city.imageGallery?.length
   ? city.imageGallery
   : [heroImage];
-
-const lightGalleryImages = city.gallery?.length > 0
-  ? city.gallery
-  : [heroImage];
-
-const nearby = [
-  ...(city.bestPlaces || []),
-  ...(city.hiddenPlaces || [])
-];
 ---
 
 <BaseLayout title={pageTitle} description={pageDesc}>
 
-  <!-- HERO SWIPER SLIDESHOW -->
-  <section class="w-full rounded-2xl overflow-hidden shadow-lg mb-10">
-
+  <!-- HERO -->
+  <section class="w-full rounded-2xl overflow-hidden shadow-lg mb-12">
     <swiper-container
-      class="w-full h-72 md:h-96 rounded-2xl"
-      pagination="true"
-      pagination-clickable="true"
+      class="w-full h-72 md:h-96"
       autoplay="true"
       loop="true"
       speed="700"
-      effect="slide"
     >
       {galleryImages.map((img) => (
         <swiper-slide>
-          <div class="relative w-full h-72 md:h-96 overflow-hidden">
-
+          <div class="relative w-full h-72 md:h-96">
             <img
               src={img}
               alt={city.title}
               class="w-full h-full object-cover transition-transform duration-700 hero-zoom"
             />
-
-            <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t
-                        from-black/60 to-transparent pointer-events-none"></div>
+            <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/60 to-transparent"></div>
           </div>
         </swiper-slide>
       ))}
     </swiper-container>
-
-    <div class="swiper-pagination hero-pagination mt-2"></div>
   </section>
 
-  <!-- TITLE + EXCERPT -->
-  <section class="mb-10">
+  <!-- TITLE -->
+  <section class="mb-12">
     <Breadcrumbs trail={[
-      { label: 'Home', href: '/' },
+      { label: "Home", href: "/" },
       { label: city.state, href: `/state/${city.state}` },
-      { label: city.title, href: '' }
+      { label: city.title, href: "" }
     ]} />
 
-    <h1 class="text-4xl font-extrabold text-slate-900 dark:text-white mt-4">
-      {city.title}
-    </h1>
+    <h1 class="text-4xl font-extrabold mt-4">{city.title}</h1>
 
-    <p class="mt-3 text-slate-600 dark:text-slate-300 text-lg max-w-3xl">
+    <p class="mt-3 text-lg text-slate-600 dark:text-slate-300 max-w-3xl">
       {city.excerpt}
     </p>
   </section>
 
-  <!-- PAGE GRID -->
-  <div class="grid md:grid-cols-3 gap-10">
+  <!-- PAGE LAYOUT -->
+  <div class="grid md:grid-cols-3 gap-12">
 
-    <!-- MAIN CONTENT -->
-    <main class="md:col-span-2 space-y-12">
-
-      <!-- HISTORY SECTION -->
-      <section class="p-6 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border dark:border-slate-700">
-        <h2 class="text-2xl font-bold mb-3 text-slate-900 dark:text-white">History</h2>
-        <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
-          {city.history}
-        </p>
-      </section>
+    <!-- MAIN -->
+    <main class="md:col-span-2 space-y-20">
 
       <!-- TOP PLACES -->
-      <section class="p-6 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border dark:border-slate-700">
-        <h2 class="text-2xl font-bold mb-4">Top Places to Visit</h2>
-        <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {city.bestPlaces?.map((p) => (
-            <li class="p-3 bg-accentLight dark:bg-slate-700 rounded-xl shadow text-slate-800 dark:text-slate-200">
-              {p}
-            </li>
-          ))}
-        </ul>
-      </section>
+      <TopPlacesGrid
+        title="Top Places to Visit"
+        places={city.bestPlaces?.slice(0, 6)}
+      />
 
       <!-- HIDDEN GEMS -->
-      {city.hiddenPlaces && (
-        <section class="p-6 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border dark:border-slate-700">
-          <h2 class="text-2xl font-bold mb-4">Hidden Gems</h2>
-          <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {city.hiddenPlaces.map((p) => (
-              <li class="p-3 bg-slate-100 dark:bg-slate-700 rounded-xl shadow">
-                {p}
-              </li>
-            ))}
-          </ul>
+      {city.hiddenPlaces?.length > 0 && (
+        <PlaceCarousel
+          title="Hidden Gems"
+          places={city.hiddenPlaces}
+        />
+      )}
+
+      <!-- MAP OVERVIEW -->
+      {city.lat && city.lng && (
+        <section>
+          <h2 class="text-2xl font-bold mb-4">City Overview</h2>
+          <CityMap lat={city.lat} lng={city.lng} title={city.title} height="360px" />
         </section>
       )}
 
-      <!-- GALLERY -->
-      <section>
-        <h2 class="text-2xl font-bold mb-4">Image Gallery</h2>
-        <LightGallery images={lightGalleryImages} title={city.title} />
-      </section>
-
-      <!-- MAP -->
-      <section>
-        <h2 class="text-2xl font-bold mb-4">Map</h2>
-        {city.lat && city.lng ? (
-          <CityMap lat={city.lat} lng={city.lng} places={city} height="400px" />
-        ) : (
-          <p class="text-slate-500 dark:text-slate-400">Map unavailable for this city.</p>
-        )}
-      </section>
-
-      <!-- NEARBY -->
-      <section class="p-6 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border dark:border-slate-700">
-        <h2 class="text-2xl font-bold mb-3">Nearby Recommendations</h2>
-        <ul class="list-disc pl-6 text-slate-700 dark:text-slate-300 space-y-1">
-          {nearby.map((p) => <li>{p}</li>)}
-        </ul>
-      </section>
+      <!-- CTA -->
+      <a
+        href={`/city/${city.slug}/places`}
+        class="inline-block text-accent font-semibold"
+      >
+        View all places in {city.title} →
+      </a>
 
     </main>
 
     <!-- SIDEBAR -->
-    <aside class="space-y-8">
-
-      <!-- DISTANCES -->
-      <section class="p-6 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border dark:border-slate-700">
-        <h3 class="text-xl font-semibold mb-3">Distances</h3>
-        <p>✈ Airport: {city.distances?.airport}</p>
-        <p>🚆 Railway: {city.distances?.railway}</p>
-        <p>🚌 Bus Station: {city.distances?.bus}</p>
-      </section>
-
-      <!-- HOTELS -->
-      <section class="p-6 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border dark:border-slate-700">
-        <h3 class="text-xl font-semibold mb-3">Best Hotels</h3>
-        <div class="space-y-4">
-          {city.bestHotels?.map((h) => (
-            <div class="p-4 border rounded-xl shadow-sm hover:shadow transition dark:border-slate-700">
-              <div class="font-medium">{h.name}</div>
-              <div class="text-sm text-slate-600 dark:text-slate-400">{h.price}</div>
-              <a href={h.link || "#"} class="text-accent text-sm hover:underline">View details</a>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <!-- HOW TO REACH -->
-      <section class="p-6 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border dark:border-slate-700">
-        <h3 class="text-xl font-semibold mb-3">How to Reach</h3>
-        <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
-          {city.howToReach}
-        </p>
-      </section>
-
+    <aside class="space-y-10">
+      <CityQuickFacts city={city} />
     </aside>
+
   </div>
 
-  <!-- SWIPER CDN -->
+  <!-- SWIPER -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js" client:load></script>
 
-  <!-- LEAFLET SCRIPTS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" client:load></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
   <style>
-    /* Hero zoom effect */
     swiper-slide:hover .hero-zoom {
       transform: scale(1.05);
-    }
-
-    /* Pagination styling */
-    swiper-container::part(bullet) {
-      width: 9px;
-      height: 9px;
-      background: #00000066;
-      margin: 0 5px;
-    }
-
-    html.dark swiper-container::part(bullet) {
-      background: #ffffff66;
-    }
-
-    swiper-container::part(bullet-active) {
-      background: #0ea5a4 !important;
-      transform: scale(1.25);
     }
   </style>
 
