@@ -17,9 +17,12 @@ entryFee: Free
 crowdLevel: High
 
 gallery:
-  - /images/haridwar/places/har-ki-pauri-3.jpg
-  - /images/haridwar/places/har-ki-pauri-2.jpg
-  - /images/haridwar/places/har-ki-pauri-4.jpg
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/2.webp
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/1.webp
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/3.webp
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/4.webp
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/7.webp
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/8.webp
 
 howToReach: >
   Har Ki Pauri is located near Haridwar Junction.

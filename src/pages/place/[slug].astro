@@ -61,21 +61,32 @@ const galleryImages = place.gallery?.length
       loop="true"
       speed="700"
     >
-      {heroImages.map((img) => (
-        <swiper-slide>
-          <div class="relative w-full h-80 md:h-[420px] overflow-hidden">
-            <img
-              src={img}
-              alt={place.title}
-              class="w-full h-full object-cover transition-transform duration-700 hero-zoom"
-            />
-            <div
-              class="absolute bottom-0 left-0 right-0 h-32
-                     bg-gradient-to-t from-black/60 to-transparent"
-            ></div>
-          </div>
-        </swiper-slide>
-      ))}
+      {heroImages.map((img) => {
+        const isProd = import.meta.env.PROD;
+        const heroSrc = isProd
+          ? `/cdn-cgi/image/width=1200,quality=80,format=auto/${encodeURIComponent(img)}`
+          : img;
+
+        return (
+          <swiper-slide>
+            <div class="relative w-full h-80 md:h-[420px] overflow-hidden">
+              <img
+                src={heroSrc}
+                width="1200"
+                height="600"
+                loading="eager"
+                fetchpriority="high"
+                alt={place.title}
+                class="w-full h-full object-cover transition-transform duration-700 hero-zoom"
+              />
+              <div
+                class="absolute bottom-0 left-0 right-0 h-32
+                      bg-gradient-to-t from-black/60 to-transparent"
+              ></div>
+            </div>
+          </swiper-slide>
+        );
+      })}
     </swiper-container>
   </section>
 

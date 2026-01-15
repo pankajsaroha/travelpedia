@@ -6,7 +6,16 @@ const { images } = Astro.props;
 <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
   {images.map((img) => (
     <a href={img} class="glightbox-item" data-gallery="city-gallery">
-      <img src={img} class="w-full h-32 md:h-40 object-cover rounded shadow-sm hover:opacity-80 transition" />
+      <img
+        src={import.meta.env.PROD
+          ? `/cdn-cgi/image/width=360,quality=50,format=auto/${encodeURIComponent(img)}`
+          : img}
+        width="360"
+        height="240"
+        loading="lazy"
+        decoding="async"
+        class="w-full h-32 md:h-40 object-cover rounded shadow-sm hover:opacity-80 transition"
+      />
     </a>
   ))}
 </div>

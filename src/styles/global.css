@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html {
   transition: background-color .25s ease, color .25s ease;
 }
@@ -8,5 +12,9 @@ body, .card, .border, .bg-white, .bg-slate-50, .bg-slate-800 {
   
 .leaflet-container {
   background: #f8f8f8 !important;
+}
+
+swiper-container {
+  touch-action: pan-x;
 }
   
