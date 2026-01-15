@@ -1,34 +1,47 @@
 ---
 title: "Dehradun"
 slug: "dehradun"
-state: "Uttarakhand"
-excerpt: "Dehradun — capital city, schools & gateway to hills"
-history: "Dehradun has colonial-era roots and many educational institutions..."
+state: "uttarakhand"
+region: north
+
+excerpt: "Dehradun is a peaceful valley city known for pleasant weather, scenic hills, cafes, and as a gateway to Mussoorie and Uttarakhand."
+
+popular: true
+idealTripLength: "2-3"
+
+themes:
+  - weekend
+  - family
+  - nature
+
+bestFor:
+  - Weekend trips
+  - Families
+  - Nature lovers
+  - Workation
+
+bestSeasons:
+  - winter
+  - summer
+  - autumn
+
 bestPlaces:
-  - "Robber's Cave"
-  - "Forest Research Institute"
+  - slug: robbers-cave
+    title: Robber’s Cave
+    excerpt: Natural river cave near the city
+    images: []
+
+  - slug: sahastradhara
+    title: Sahastradhara
+    excerpt: Sulphur springs and scenic waterfalls
+    images: []
+
 hiddenPlaces:
-  - "Tapkeshwar Temple caves"
-  - "Sahastradhara outskirts"
-distances:
-  airport: "35 km (Jolly Grant)"
-  railway: "1 km (Dehradun Railway Station)"
-  bus: "1 km (Dehradun Bus Stand)"
-howToReach: "Regular trains and buses from Delhi and neighboring cities."
-bestHotels:
-  -
-    name: "Lemon Tree Hotel"
-    price: "₹2500–₹4500"
-    link: ""
-#image: "/images/placeholder-2.svg"
-imageGallery:
-  - "/images/dehradun/dehradun1.jpg"
-  - "/images/dehradun/dehradun2.jpeg"
-  - "/images/dehradun/dehradun3.jpeg"
-  - "/images/dehradun/dehradun4.jpeg"
+  - slug: buddha-temple
+    title: Buddha Temple
+    excerpt: Calm Tibetan monastery
+    images: []
 
 lat: 30.3165
 lng: 78.0322
 ---
-
-Write extended content here in Markdown.

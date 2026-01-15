@@ -18,3 +18,17 @@ swiper-container {
   touch-action: pan-x;
 }
   
+@media (max-width: 640px) {
+  .quick-facts {
+    position: sticky;
+    top: 72px; /* below header */
+    z-index: 20;
+    background: inherit;
+  }
+}
+
+@media (max-width: 640px) {
+  .quick-facts ul {
+    font-size: 0.95rem;
+  }
+}

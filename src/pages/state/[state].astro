@@ -1,0 +1,68 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CityCard from "../../components/CityCard.astro";
+
+/* ---------- REQUIRED FOR SSG ---------- */
+export function getStaticPaths() {
+  const cityModules = import.meta.glob(
+    "../../content/cities/*.md",
+    { eager: true }
+  );
+
+  const cities = Object.values(cityModules).map(
+    m => m.frontmatter
+  );
+
+  const states = Array.from(
+    new Set(
+      cities
+        .map(c => c.state)
+        .filter(Boolean)
+        .map(s => s.toLowerCase())
+    )
+  );
+
+  return states.map(state => ({
+    params: { state }
+  }));
+}
+
+/* ---------- PAGE LOGIC ---------- */
+const { state } = Astro.params;
+
+const cityModules = import.meta.glob(
+  "../../content/cities/*.md",
+  { eager: true }
+);
+
+const cities = Object.values(cityModules).map(
+  m => m.frontmatter
+);
+
+const stateCities = cities.filter(
+  c => c.state?.toLowerCase() === state
+);
+---
+
+<BaseLayout title={`${state} travel — Travelpedia`}>
+
+  <section class="mb-12">
+    <h1 class="text-4xl font-extrabold capitalize">
+      {state}
+    </h1>
+    <p class="mt-3 text-lg text-slate-600 max-w-3xl">
+      Explore cities and destinations across {state}.
+    </p>
+  </section>
+
+  {stateCities.length > 0 ? (
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+      {stateCities.map(city => (
+        <CityCard city={city} />
+      ))}
+    </div>
+  ) : (
+    <p class="text-slate-500">No cities found.</p>
+  )}
+
+</BaseLayout>
