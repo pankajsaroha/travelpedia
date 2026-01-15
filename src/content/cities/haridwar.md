@@ -2,6 +2,7 @@
 title: "Haridwar"
 slug: "haridwar"
 state: "Uttarakhand"
+stateLabel: "Uttrakhand"
 
 excerpt: "Haridwar is one of India’s holiest cities where the River Ganga enters the plains, famous for temples, ghats, yoga, and spiritual energy."
 
@@ -119,4 +120,33 @@ localInsight:
 
 lat: 30.0889
 lng: 78.2676
+
+region: north
+
+themes:
+  - spiritual
+  - weekend
+
+idealTripLength: "2-3"
+
+popular: true
+
+bestFor:
+  - Spiritual seekers
+  - Weekend trip
+  - Solo travelers
+  - Senior citizens
+
+bestSeasons:
+  - winter
+  - summer
+  - monsoon
+
+# closedDuring:
+#   - monsoon
+
+# openMonths:
+#   from: 5   # May
+#   to: 10   # October
+
 ---

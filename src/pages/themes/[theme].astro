@@ -1,0 +1,112 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CityCard from "../../components/CityCard.astro";
+
+/* ---------- REQUIRED FOR SSG ---------- */
+export function getStaticPaths() {
+  const cityModules = import.meta.glob(
+    "../../content/cities/*.md",
+    { eager: true }
+  );
+
+  const cities = Object.values(cityModules).map(
+    m => m.frontmatter
+  );
+
+  const themes = Array.from(
+    new Set(
+      cities.flatMap(c => c.themes || [])
+    )
+  );
+
+  return themes.map(theme => ({
+    params: { theme }
+  }));
+}
+
+/* ---------- PAGE LOGIC ---------- */
+const { theme } = Astro.params;
+
+const cityModules = import.meta.glob(
+  "../../content/cities/*.md",
+  { eager: true }
+);
+
+const cities = Object.values(cityModules).map(
+  m => m.frontmatter
+);
+
+// ---- SEASON UTILS ----
+const month = new Date().getMonth() + 1;
+
+function getSeason(month) {
+  if ([12,1,2].includes(month)) return "winter";
+  if ([3,4,5].includes(month)) return "summer";
+  if ([6,7,8,9].includes(month)) return "monsoon";
+  return "autumn";
+}
+
+const currentSeason = getSeason(month);
+
+// ---- FILTER BY THEME + SEASON ----
+const themedCities = cities.filter(c => {
+  if (!c.themes?.includes(theme)) return false;
+
+  if (c.bestSeasons && !c.bestSeasons.includes(currentSeason)) {
+    return false;
+  }
+
+  if (c.closedDuring && c.closedDuring.includes(currentSeason)) {
+    return false;
+  }
+
+  if (c.openMonths) {
+    if (month < c.openMonths.from || month > c.openMonths.to) {
+      return false;
+    }
+  }
+
+  return true;
+});
+
+// ---- GROUP BY REGION ----
+const regions = themedCities.reduce((acc, city) => {
+  const region = city.region || "other";
+  acc[region] ||= [];
+  acc[region].push(city);
+  return acc;
+}, {});
+---
+
+<BaseLayout title={`${theme} travel — Travelpedia`}>
+
+  <section class="mb-12">
+    <h1 class="text-4xl font-extrabold capitalize">
+      {theme.replace("-", " ")} Journeys
+    </h1>
+    <p class="mt-3 text-lg text-slate-600 max-w-3xl">
+      Season-aware destinations grouped by region.
+    </p>
+  </section>
+
+  {Object.keys(regions).length > 0 ? (
+    Object.entries(regions).map(([region, cities]) => (
+      <section class="mb-16 space-y-6">
+        <h2 class="text-2xl font-bold capitalize">
+          {region} India
+        </h2>
+
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+          {cities.slice(0, 6).map(city => (
+            <CityCard city={city} />
+          ))}
+        </div>
+      </section>
+    ))
+  ) : (
+    <p class="text-slate-500">
+      No destinations available for this theme right now.
+    </p>
+  )}
+
+</BaseLayout>

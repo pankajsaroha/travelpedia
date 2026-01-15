@@ -1,63 +1,59 @@
 ---
-import FactCard from "./FactCard.astro";
 const { city } = Astro.props;
+
+const facts = [];
+
+if (city.bestTime?.best) {
+  facts.push({
+    label: "Best time to visit",
+    value: city.bestTime.best
+  });
+}
+
+if (city.idealStay?.recommended) {
+  facts.push({
+    label: "Ideal stay",
+    value: city.idealStay.recommended
+  });
+}
+
+if (city.distances?.airport) {
+  facts.push({
+    label: "Airport",
+    value: city.distances.airport
+  });
+}
+
+if (city.distances?.railway) {
+  facts.push({
+    label: "Railway",
+    value: city.distances.railway
+  });
+}
+
+if (city.region) {
+  facts.push({
+    label: "Region",
+    value: city.region.charAt(0).toUpperCase() + city.region.slice(1)
+  });
+}
 ---
 
-<section class="space-y-4">
+{facts.length > 0 && (
+  <section>
+    <h2 class="text-xl font-semibold mb-4">
+      Quick Facts
+    </h2>
 
-  <h3 class="text-lg font-semibold hidden md:block">
-    Quick Facts
-  </h3>
-
-  <!-- MOBILE: horizontal swipe -->
-  <div class="flex gap-3 overflow-x-auto md:hidden pb-2">
-    {city.state && <FactCard label="State" value={city.state} />}
-    {city.distances?.airport && (
-      <FactCard label="Airport" value={city.distances.airport} />
-    )}
-    {city.distances?.railway && (
-      <FactCard label="Railway" value={city.distances.railway} />
-    )}
-    {city.bestTime?.best && (
-      <FactCard label="Best Time" value={city.bestTime.best} />
-    )}
-    {city.idealStay?.recommended && (
-      <FactCard label="Ideal Stay" value={city.idealStay.recommended} />
-    )}
-  </div>
-
-  <!-- DESKTOP: sidebar -->
-  <ul class="hidden md:block space-y-3 text-sm text-slate-700 dark:text-slate-300">
-    {city.state && (
-      <li class="flex justify-between">
-        <span class="text-slate-500">State</span>
-        <span>{city.state}</span>
-      </li>
-    )}
-    {city.distances?.airport && (
-      <li class="flex justify-between">
-        <span class="text-slate-500">Airport</span>
-        <span>{city.distances.airport}</span>
-      </li>
-    )}
-    {city.distances?.railway && (
-      <li class="flex justify-between">
-        <span class="text-slate-500">Railway</span>
-        <span>{city.distances.railway}</span>
-      </li>
-    )}
-    {city.bestTime?.best && (
-      <li class="flex justify-between">
-        <span class="text-slate-500">Best Time</span>
-        <span>{city.bestTime.best}</span>
-      </li>
-    )}
-    {city.idealStay?.recommended && (
-      <li class="flex justify-between">
-        <span class="text-slate-500">Ideal Stay</span>
-        <span>{city.idealStay.recommended}</span>
-      </li>
-    )}
-  </ul>
-
-</section>
+    <ul class="space-y-2 text-slate-700 dark:text-slate-300">
+      {facts.map(f => (
+        <li class="flex gap-2">
+          <span class="text-accent">•</span>
+          <span>
+            <strong>{f.label}: </strong> {f.value}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}

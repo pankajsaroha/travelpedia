@@ -1,34 +1,45 @@
 ---
 title: "Gangotri"
 slug: "gangotri"
-state: "Uttarakhand"
-excerpt: "Gangotri — origin of the Ganges, remote glacier shrine"
-history: "Gangotri marks the origin of river Ganga at the Gangotri glacier."
-bestPlaces:
-  - "Gangotri Temple"
-  - "Gangotri Glacier viewpoint"
-hiddenPlaces:
-  - "Bhagirathi valley trails"
-  - "Nearby meadows"
-distances:
-  airport: "250 km (Dehradun/Jolly Grant)"
-  railway: "230 km (Haridwar)"
-  bus: "5 km (Gangotri approach)"
-howToReach: "Road travel from Uttarkashi followed by local approach; challenging terrain."
-bestHotels:
-  -
-    name: "Forest Guest House"
-    price: "₹800–₹2000"
-    link: ""
-#image: "/images/placeholder-3.svg"
-imageGallery:
-  - "/images/auli/auli1.jpeg"
-  - "/images/auli/auli2.jpeg"
-  - "/images/auli/auli3.jpeg"
-  - "/images/auli/auli4.jpeg"
+state: "uttarakhand"
+region: north
 
-lat: 30.9940
-lng: 78.9410
+excerpt: "Gangotri is the sacred origin of the River Ganga, surrounded by glaciers, mountains, and deep spiritual significance."
+
+popular: false
+idealTripLength: "3-4"
+
+themes:
+  - spiritual
+  - pilgrimage
+  - nature
+
+bestFor:
+  - Spiritual seekers
+  - Pilgrims
+  - Nature lovers
+
+bestSeasons:
+  - summer
+
+openMonths:
+  from: 5   # May
+  to: 10   # October
+
+bestPlaces:
+  - slug: gangotri-temple
+    title: Gangotri Temple
+    excerpt: Temple dedicated to Goddess Ganga
+    images: []
+
+hiddenPlaces:
+  - slug: surya-kund
+    title: Surya Kund
+    excerpt: Hot water spring near temple
+    images: []
+
+lat: 30.9943
+lng: 78.9398
 ---
 
 Write extended content here in Markdown.

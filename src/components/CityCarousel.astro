@@ -1,0 +1,27 @@
+---
+import CityCard from "./CityCard.astro";
+const { cities } = Astro.props;
+---
+
+<!-- MOBILE: SWIPE -->
+<div class="md:hidden">
+  <swiper-container
+    slides-per-view="auto"
+    space-between="16"
+    free-mode="true"
+    grab-cursor="true"
+  >
+    {cities.map(city => (
+      <swiper-slide class="w-[260px]">
+        <CityCard city={city} />
+      </swiper-slide>
+    ))}
+  </swiper-container>
+</div>
+
+<!-- DESKTOP: GRID -->
+<div class="hidden md:grid md:grid-cols-3 gap-8">
+  {cities.map(city => (
+    <CityCard city={city} />
+  ))}
+</div>

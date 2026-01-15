@@ -7,6 +7,7 @@ import CityQuickFacts from "../../components/CityQuickFacts.astro";
 import CitySimpleList from "../../components/CitySimpleList.astro";
 import CityInfoCards from "../../components/CityInfoCards.astro";
 import LocalInsight from "../../components/LocalInsight.astro";
+import CityBestFor from "../../components/CityBestFor.astro";
 
 // SSG
 export async function getStaticPaths() {
@@ -72,7 +73,7 @@ const galleryImages = city.imageGallery?.length
   <section class="mb-12">
     <Breadcrumbs trail={[
       { label: "Home", href: "/" },
-      { label: city.state, href: `/state/${city.state}` },
+      { label: city.state, href: `/state/${city.state.toLowerCase()}` },
       { label: city.title, href: "" }
     ]} />
 
@@ -81,10 +82,21 @@ const galleryImages = city.imageGallery?.length
     <p class="mt-3 text-lg text-slate-600 dark:text-slate-300 max-w-3xl">
       {city.excerpt}
     </p>
+
+    <!-- BEST FOR (HIGH IMPACT, EARLY) -->
+    {city.bestFor && city.bestFor.length >= 2 && (
+      <div class="mt-6">
+        <CityBestFor items={city.bestFor} />
+      </div>
+    )}
   </section>
 
+<!-- QUICK FACTS (FULL WIDTH, COMPACT) -->
+<section class="quick-facts mb-16">
+  <CityQuickFacts city={city} />
+</section>
+
   <!-- PAGE LAYOUT -->
-  <div class="grid md:grid-cols-3 gap-12">
 
     <!-- MAIN -->
     <main class="md:col-span-2 space-y-20">
@@ -165,12 +177,6 @@ const galleryImages = city.imageGallery?.length
 
     </main>
 
-    <!-- SIDEBAR -->
-    <aside class="space-y-10">
-      <CityQuickFacts city={city} />
-    </aside>
-
-  </div>
 
   <!-- SWIPER -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />

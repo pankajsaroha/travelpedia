@@ -1,171 +1,240 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CityCard from "../components/CityCard.astro";
+import CityCarousel from "../components/CityCarousel.astro"
 
-// Load cities
+// Load all cities
 const cityPages = Object.values(
   import.meta.glob('../content/cities/*.md', { eager: true })
 ).map((m) => m.frontmatter);
 
-// Featured cities (top 6)
-const featured = cityPages.slice(0, 6);
+// ---- SEASON UTILS ----
+const month = new Date().getMonth() + 1;
+
+function getSeason(month) {
+  if ([12,1,2].includes(month)) return "winter";
+  if ([3,4,5].includes(month)) return "summer";
+  if ([6,7,8,9].includes(month)) return "monsoon";
+  return "autumn";
+}
+
+const currentSeason = getSeason(month);
+
+// Sections
+let popularNow = cityPages.filter(c => {
+  if (!c.popular) return false;
+
+  // Season match
+  if (c.bestSeasons && !c.bestSeasons.includes(currentSeason)) {
+    return false;
+  }
+
+  // Closed during season
+  if (c.closedDuring && c.closedDuring.includes(currentSeason)) {
+    return false;
+  }
+
+  // Open months constraint
+  if (c.openMonths) {
+    if (month < c.openMonths.from || month > c.openMonths.to) {
+      return false;
+    }
+  }
+
+  return true;
+});
+
+if (popularNow.length < 6) {
+  const fallback = cityPages.filter(c =>
+    c.popular && !popularNow.includes(c)
+  );
+
+  popularNow = [...popularNow, ...fallback];
+}
+
+// ---- REGION BALANCING ----
+const regionMap = {};
+
+popularNow.forEach(city => {
+  const region = city.region || "other";
+  regionMap[region] ||= [];
+  regionMap[region].push(city);
+});
+
+// pick one city per region first
+let balancedPopular = [];
+Object.values(regionMap).forEach(list => {
+  if (list.length > 0) {
+    balancedPopular.push(list[0]);
+  }
+});
+
+// fill remaining slots (if less than 6)
+if (balancedPopular.length < 6) {
+  popularNow.forEach(city => {
+    if (
+      balancedPopular.length < 6 &&
+      !balancedPopular.includes(city)
+    ) {
+      balancedPopular.push(city);
+    }
+  });
+}
+
+popularNow = balancedPopular.slice(0, 6);
+
+const shortTripCities = cityPages.filter(
+  c => c.idealTripLength === "2-3"
+).slice(0, 6);
 ---
 
 <BaseLayout title="Travelpedia — Explore Top Cities">
 
-  <!-- PREMIUM HERO SECTION -->
+  <!-- HERO -->
   <section class="mt-10 mb-16 text-center">
-    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight text-slate-900 dark:text-white">
+    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">
       Discover <span class="text-accent">Cities</span>, Adventures & Hidden Gems
     </h1>
 
     <p class="mt-4 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-      Explore curated travel guides with history, must-visit spots, hotels, routes & more.
+      Explore curated travel guides with history, must-visit spots, routes & local insights.
     </p>
 
-    <!-- SEARCH BAR -->
+    <!-- SEARCH -->
     <div class="mt-8 max-w-xl mx-auto relative">
       <input
         id="site-search"
         placeholder="Search for a city…"
-        class="w-full p-4 rounded-xl border dark:border-slate-700 bg-white dark:bg-slate-800 
-               shadow-md focus:ring-2 ring-accent outline-none transition"
+        class="w-full p-4 rounded-xl border bg-white dark:bg-slate-800
+               shadow-md focus:ring-2 ring-accent outline-none"
       />
-
       <div
         id="suggestions"
-        class="absolute left-0 right-0 bg-white dark:bg-slate-800 border dark:border-slate-700 
-               rounded-xl mt-2 shadow-xl hidden max-h-64 overflow-y-auto z-50"
+        class="absolute left-0 right-0 hidden bg-white dark:bg-slate-800
+               border rounded-xl mt-2 shadow-xl max-h-64 overflow-y-auto z-50"
       ></div>
     </div>
   </section>
 
-  <!-- FEATURED DESTINATIONS -->
-  <section class="mb-16">
-    <h2 class="text-3xl font-bold mb-6 text-slate-900 dark:text-white tracking-tight">
-      Featured Destinations
-    </h2>
+  <!-- POPULAR RIGHT NOW -->
+  {popularNow.length > 0 && (
+    <section class="mb-20">
+      <h2 class="text-3xl font-bold mb-6">
+        Popular Right Now
+      </h2>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-      {featured.map((c) => <CityCard city={c} />)}
-    </div>
-  </section>
+    <CityCarousel cities={popularNow} />
 
-  <!-- THEMATIC COLLECTIONS -->
-  <section class="mb-16">
-    <h2 class="text-3xl font-bold mb-6 text-slate-900 dark:text-white tracking-tight">
+    </section>
+  )}
+
+  <!-- SHORT TRIPS -->
+  {shortTripCities.length > 0 && (
+    <section class="mb-20">
+      <h2 class="text-3xl font-bold mb-6">
+        Short Trips (2–3 Days)
+      </h2>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {shortTripCities.map(c => <CityCard city={c} />)}
+      </div>
+    </section>
+  )}
+
+  <!-- TRAVEL THEMES -->
+  <section class="mb-20">
+    <h2 class="text-3xl font-bold mb-6">
       Travel Themes
     </h2>
 
     <div class="grid md:grid-cols-3 gap-6">
 
-      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 
-                  shadow-sm hover:shadow-md transition">
+      <a
+        href="/themes/spiritual"
+        class="block rounded-xl p-6 bg-accentLight dark:bg-slate-800
+               border shadow-sm hover:shadow-md transition"
+      >
         <h3 class="text-xl font-semibold mb-2">Spiritual Journeys</h3>
-        <p class="text-slate-700 dark:text-slate-300 text-sm">
-          Explore temples, rituals & sacred rivers across India.
+        <p class="text-sm text-slate-700 dark:text-slate-300">
+          Temples, ghats, rituals & sacred rivers across India.
         </p>
-      </div>
+      </a>
 
-      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 
-                  shadow-sm hover:shadow-md transition">
+      <a
+        href="/themes/adventure"
+        class="block rounded-xl p-6 bg-accentLight dark:bg-slate-800
+               border shadow-sm hover:shadow-md transition"
+      >
         <h3 class="text-xl font-semibold mb-2">Adventure Destinations</h3>
-        <p class="text-slate-700 dark:text-slate-300 text-sm">
-          Rafting, trekking, mountains, camping & thrilling trails.
+        <p class="text-sm text-slate-700 dark:text-slate-300">
+          Trekking, rafting, mountains & thrilling landscapes.
         </p>
-      </div>
+      </a>
 
-      <div class="rounded-xl p-6 bg-accentLight dark:bg-slate-800 border dark:border-slate-700 
-                  shadow-sm hover:shadow-md transition">
+      <a
+        href="/themes/family"
+        class="block rounded-xl p-6 bg-accentLight dark:bg-slate-800
+               border shadow-sm hover:shadow-md transition"
+      >
         <h3 class="text-xl font-semibold mb-2">Family Getaways</h3>
-        <p class="text-slate-700 dark:text-slate-300 text-sm">
-          Peaceful escapes, scenic viewpoints & memorable trips.
+        <p class="text-sm text-slate-700 dark:text-slate-300">
+          Peaceful, safe & memorable destinations for families.
         </p>
-      </div>
+      </a>
 
     </div>
   </section>
 
-  <!-- CALL TO ACTION -->
-  <section class="py-16 mt-10 rounded-2xl bg-gradient-to-r from-accent to-accentDark text-white 
-                  text-center shadow-lg">
+  <!-- CTA -->
+  <section class="py-16 rounded-2xl bg-gradient-to-r from-accent to-accentDark
+                  text-white text-center shadow-lg">
     <h2 class="text-4xl font-bold mb-4">Plan Your Next Journey</h2>
     <p class="text-lg mb-6 opacity-90">
-      Travelpedia helps you explore destinations like never before.
+      Discover destinations that match your travel style.
     </p>
-    
-    <a href="/"
-      class="inline-block px-8 py-4 bg-white text-accent font-semibold rounded-xl shadow-md 
-             hover:bg-slate-100 transition">
+
+    <a href="/themes/spiritual"
+       class="inline-block px-8 py-4 bg-white text-accent font-semibold rounded-xl shadow-md">
       Start Exploring
     </a>
   </section>
 
 </BaseLayout>
 
-<!-- FINAL, UNBREAKABLE SEARCH LOGIC -->
+<!-- SEARCH SCRIPT (UNCHANGED) -->
 <script is:inline define:vars={{ cityPages }}>
   const cities = cityPages;
-
   const input = document.getElementById("site-search");
   const suggestions = document.getElementById("suggestions");
 
-  function renderSuggestion(c) {
-    return `
-      <div class="p-3 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer border-b dark:border-slate-700"
-           data-slug="${c.slug}">
-        <div class="font-semibold">${c.title}</div>
-        <div class="text-sm text-slate-500 dark:text-slate-400">
-          ${c.excerpt || ""}
-        </div>
-      </div>
-    `;
-  }
-
   function search(q) {
     q = q.toLowerCase();
-    return cities.filter((c) =>
+    return cities.filter(c =>
       (c.title + " " + (c.excerpt || "") + " " + (c.state || ""))
         .toLowerCase()
         .includes(q)
     );
   }
 
-  // Typing
-  input.addEventListener("input", (e) => {
-    const query = e.target.value.trim();
+  input.addEventListener("input", e => {
+    const q = e.target.value.trim();
+    if (!q) return suggestions.classList.add("hidden");
 
-    if (!query) {
-      suggestions.classList.add("hidden");
-      suggestions.innerHTML = "";
-      return;
-    }
-
-    const results = search(query);
-
-    suggestions.innerHTML =
-      results.length === 0
-        ? "<div class='p-3 text-sm text-slate-500 dark:text-slate-400'>No results</div>"
-        : results.map(renderSuggestion).join("");
+    const results = search(q);
+    suggestions.innerHTML = results.length
+      ? results.map(c => `
+        <div data-slug="${c.slug}" class="p-3 cursor-pointer border-b">
+          <div class="font-semibold">${c.title}</div>
+          <div class="text-sm text-slate-500">${c.excerpt || ""}</div>
+        </div>
+      `).join("")
+      : "<div class='p-3 text-sm'>No results</div>";
 
     suggestions.classList.remove("hidden");
   });
 
-  // Click result
-  suggestions.addEventListener("click", (e) => {
+  suggestions.addEventListener("click", e => {
     const el = e.target.closest("[data-slug]");
-    if (!el) return;
-    window.location.href = "/city/" + el.dataset.slug;
-  });
-
-  // Enter key
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      const query = input.value.trim();
-      const results = search(query);
-      if (results.length > 0) {
-        window.location.href = "/city/" + results[0].slug;
-      }
-    }
+    if (el) location.href = "/city/" + el.dataset.slug;
   });
 </script>

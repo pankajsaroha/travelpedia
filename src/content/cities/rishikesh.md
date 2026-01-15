@@ -1,36 +1,49 @@
 ---
 title: "Rishikesh"
 slug: "rishikesh"
-state: "Uttarakhand"
-excerpt: "Rishikesh — yoga capital, river rafting & temples"
-history: "Rishikesh grew as a pilgrimage town at the foothills of the Himalayas..."
+state: "uttarakhand"
+region: north
+
+excerpt: "Rishikesh is the yoga capital of the world, famous for spirituality, adventure sports, and the holy Ganga flowing through the Himalayas."
+
+popular: true
+idealTripLength: "2-3"
+
+themes:
+  - spiritual
+  - adventure
+  - weekend
+
+bestFor:
+  - Spiritual seekers
+  - Adventure lovers
+  - Solo travelers
+  - Yoga & meditation
+
+bestSeasons:
+  - winter
+  - summer
+  - autumn
+
+closedDuring:
+  - monsoon
+
 bestPlaces:
-  - "Laxman Jhula"
-  - "Triveni Ghat"
-  - "Ram Jhula"
+  - slug: laxman-jhula
+    title: Laxman Jhula
+    excerpt: Iconic suspension bridge
+    images: []
+
+  - slug: ram-jhula
+    title: Ram Jhula
+    excerpt: Spiritual river crossing
+    images: []
+
 hiddenPlaces:
-  - "Neelkanth Mahadev trek"
-  - "Rajaji National Park outskirts"
-distances:
-  airport: "35 km (Jolly Grant)"
-  railway: "25 km (Haridwar Junction)"
-  bus: "0.5 km (Rishikesh Bus Stand)"
-howToReach: "Best reached by road from Dehradun/Haridwar; nearest airport is Dehradun (Jolly Grant)."
-bestHotels:
-  -
-    name: "Ganga Kinare"
-    price: "₹3000–₹6000"
-    link: ""
-#image: "/images/placeholder-2.svg"
-imageGallery:
-  - "/images/rishikesh/rishikesh1.jpeg"
-  - "/images/rishikesh/rishikesh2.jpeg"
-  - "/images/rishikesh/rishikesh3.jpeg"
-  - "/images/rishikesh/rishikesh4.jpeg"
-  - "/images/rishikesh/rishikesh5.jpeg"
-  - "/images/rishikesh/rishikesh6.jpeg"
-  - "/images/rishikesh/rishikesh7.jpeg"
-  - "/images/rishikesh/rishikesh8.jpeg"
+  - slug: beetles-ashram
+    title: Beatles Ashram
+    excerpt: Abandoned ashram with graffiti art
+    images: []
 
 lat: 30.0869
 lng: 78.2676
