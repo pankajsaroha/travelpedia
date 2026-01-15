@@ -1,15 +1,63 @@
 ---
+import FactCard from "./FactCard.astro";
 const { city } = Astro.props;
 ---
 
-<div class="space-y-4">
-  <h3 class="text-lg font-semibold">Quick Facts</h3>
+<section class="space-y-4">
 
-  <ul class="text-sm text-slate-600 dark:text-slate-300 space-y-2">
-    <li>🌤 Best time: {city.bestTime}</li>
-    <li>🗓 Ideal stay: {city.idealDays} days</li>
-    <li>✈ Airport: {city.distances?.airport}</li>
-    <li>🚆 Railway: {city.distances?.railway}</li>
-    <li>💰 Budget: {city.budgetRange}</li>
+  <h3 class="text-lg font-semibold hidden md:block">
+    Quick Facts
+  </h3>
+
+  <!-- MOBILE: horizontal swipe -->
+  <div class="flex gap-3 overflow-x-auto md:hidden pb-2">
+    {city.state && <FactCard label="State" value={city.state} />}
+    {city.distances?.airport && (
+      <FactCard label="Airport" value={city.distances.airport} />
+    )}
+    {city.distances?.railway && (
+      <FactCard label="Railway" value={city.distances.railway} />
+    )}
+    {city.bestTime?.best && (
+      <FactCard label="Best Time" value={city.bestTime.best} />
+    )}
+    {city.idealStay?.recommended && (
+      <FactCard label="Ideal Stay" value={city.idealStay.recommended} />
+    )}
+  </div>
+
+  <!-- DESKTOP: sidebar -->
+  <ul class="hidden md:block space-y-3 text-sm text-slate-700 dark:text-slate-300">
+    {city.state && (
+      <li class="flex justify-between">
+        <span class="text-slate-500">State</span>
+        <span>{city.state}</span>
+      </li>
+    )}
+    {city.distances?.airport && (
+      <li class="flex justify-between">
+        <span class="text-slate-500">Airport</span>
+        <span>{city.distances.airport}</span>
+      </li>
+    )}
+    {city.distances?.railway && (
+      <li class="flex justify-between">
+        <span class="text-slate-500">Railway</span>
+        <span>{city.distances.railway}</span>
+      </li>
+    )}
+    {city.bestTime?.best && (
+      <li class="flex justify-between">
+        <span class="text-slate-500">Best Time</span>
+        <span>{city.bestTime.best}</span>
+      </li>
+    )}
+    {city.idealStay?.recommended && (
+      <li class="flex justify-between">
+        <span class="text-slate-500">Ideal Stay</span>
+        <span>{city.idealStay.recommended}</span>
+      </li>
+    )}
   </ul>
-</div>
+
+</section>

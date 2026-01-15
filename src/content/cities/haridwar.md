@@ -3,84 +3,120 @@ title: "Haridwar"
 slug: "haridwar"
 state: "Uttarakhand"
 
-excerpt: "Haridwar — spiritual gateway to the Ganges, sacred ghats, and centuries-old pilgrimage."
+excerpt: "Haridwar is one of India’s holiest cities where the River Ganga enters the plains, famous for temples, ghats, yoga, and spiritual energy."
 
-history: |
-  Haridwar has been one of the most sacred cities in India for thousands of years...
-  (write more content here)
+aboutOneLine: "Spiritual gateway of India where faith, Ganga, and daily life flow together."
+
+imageGallery:
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/2.webp
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/1.webp
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/3.webp
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/4.webp
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/7.webp
+  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/8.webp
 
 bestPlaces:
   - slug: har-ki-pauri
     title: Har Ki Pauri
-    excerpt: Sacred ghat on the banks of the Ganges
+    excerpt: Evening Ganga Aarti at the most sacred ghat
     images:
-      - /images/haridwar/places/har-ki-pauri-3.jpg
-      - /images/haridwar/places/har-ki-pauri-4.jpg
-      - /images/haridwar/places/har-ki-pauri-2.jpg
-      - /images/haridwar/places/har-ki-pauri-1.jpg
+      - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/2.webp
 
   - slug: mansa-devi
     title: Mansa Devi Temple
-    excerpt: Hilltop temple with panoramic views
+    excerpt: Ropeway ride with panoramic city views
     images:
       - /images/haridwar/places/mansa-devi-1.jpg
-      - /images/haridwar/places/mansa-devi-2.jpg
 
-  - slug: ganga-aarti
-    title: Ganga Aarti
-    excerpt: Sacred Ganga Aarti
-    images:
-      - /images/haridwar/places/har-ki-pauri-1.jpg
-      - /images/haridwar/places/har-ki-pauri-2.jpg
+  - slug: chandi-devi
+    title: Chandi Devi Temple
+    excerpt: Peaceful hilltop temple
+    images: []
 
+  - slug: bharat-mata-mandir
+    title: Bharat Mata Mandir
+    excerpt: Unique 8-floor temple dedicated to India
+    images: []
 
+  - slug: daksh-mahadev-temple
+    title: Daksh Mahadev Temple
+    excerpt: Ancient Shiva temple in Kankhal
+    images: []
+
+  - slug: sapt-rishi-ghat
+    title: Sapt Rishi Ghat
+    excerpt: Calm and spiritual riverside ghat
+    images: []
 
 hiddenPlaces:
-  - slug: Shantikunj
-    title: ShantiKunj
-    excerpt: Shantikunj Meditation
-    images:
-      - /images/haridwar/places/har-ki-pauri-2.jpg
-  - slug: Sapt Rishi Ashram
-    title: Sapt Rishi Ashram
-    excerpt: Ashram
-    images:
-      - /images/haridwar/places/har-ki-pauri-2.jpg
+  - slug: neel-dhara-pakshi-vihar
+    title: Neel Dhara Pakshi Vihar
+    excerpt: Quiet bird habitat along the Ganga
+    images: []
 
-distances:
-  airport: "30 km (Jolly Grant, Dehradun)"
-  railway: "2 km (Haridwar Junction)"
-  bus: "1 km (Haridwar Bus Stand)"
+  - slug: kushavarta-ghat
+    title: Kushavarta Ghat
+    excerpt: Peaceful ghat for local rituals
+    images: []
 
-howToReach: |
-  Haridwar is well-connected by road, rail, and air...
-  (add more details)
+  - slug: kankhal-area
+    title: Old Kankhal Area
+    excerpt: Authentic local Haridwar experience
+    images: []
 
-bestHotels:
-  - name: "Hotel Ganga View"
-    price: "₹2000–₹4000"
-    link: "#"
+  - slug: patanjali-yogpeeth
+    title: Patanjali Yogpeeth
+    excerpt: Yoga and spiritual campus
+    images: []
 
-#image: "/images/placeholder-1.svg"
-imageGallery:
-  - /images/haridwar/places/har-ki-pauri-1.jpg
-  - /images/haridwar/places/har-ki-pauri-3.jpg
-  - /images/haridwar/places/har-ki-pauri-4.jpg
-  - /images/haridwar/places/mansa-devi-2.jpg
+thingsToDo:
+  - Attend Ganga Aarti (morning & evening)
+  - Take a holy dip in the Ganga
+  - Yoga & meditation at ashrams
+  - Temple hopping on foot
+  - Riverside morning walks
+  - Local food walk (kachori, jalebi, aloo puri)
+
+bestTime:
+  best: "October – March (pleasant weather)"
+  good: "July – September (lush but humid)"
+  avoid: "May – June (very hot)"
+  special: "Kumbh & Kanwar Yatra (crowded but spiritual)"
+
+idealStay:
+  oneDay: "Main temples + Ganga Aarti"
+  twoDays: "Temples, hidden ghats, yoga"
+  threeDays: "Add Rajaji National Park"
+  recommended: "2 days"
+
+budget:
+  budgetStay: "₹800 – ₹1,500"
+  midRangeStay: "₹2,000 – ₹4,000"
+  food: "₹200 – ₹400"
+  localTravel: "₹200 – ₹500"
+  summary:
+    budgetTrip: "₹1,200 – ₹2,000/day"
+    comfortableTrip: "₹2,500 – ₹4,500/day"
+
+food:
+  - Aloo Puri
+  - Kachori Sabzi
+  - Jalebi & Rabri
+  - Kulhad Chai
+  - Satvik Ashram Thali
+
+tips:
+  - Dress modestly (temple city)
+  - Avoid fake pandits asking for money
+  - Do not litter near ghats
+  - Keep belongings safe during Aarti
+  - Morning hours are less crowded
+  - Photography may be restricted
+
+localInsight:
+  title: "Local Insight"
+  tip: "Sit quietly at any ghat early morning (5–6 AM). No phones. No rush. That’s when Haridwar feels truly magical."
 
 lat: 30.0889
 lng: 78.2676
-
-placeCoords:
-  - name: "Har Ki Pauri"
-    lat: 29.9457
-    lng: 78.1642
-  - name: "Mansa Devi Temple"
-    lat: 29.9470
-    lng: 78.1820
-
-hiddenPlacesCoords:
-  - name: "Small scenic ghat"
-    lat: 29.9461
-    lng: 78.1675
 ---

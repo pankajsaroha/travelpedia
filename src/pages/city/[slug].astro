@@ -3,8 +3,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Breadcrumbs from "../../components/Breadcrumbs.astro";
 import CityMap from "../../components/CityMap.astro";
 import PlaceCarousel from "../../components/PlaceCarousel.astro";
-import TopPlacesGrid from "../../components/TopPlacesGrid.astro";
 import CityQuickFacts from "../../components/CityQuickFacts.astro";
+import CitySimpleList from "../../components/CitySimpleList.astro";
+import CityInfoCards from "../../components/CityInfoCards.astro";
+import LocalInsight from "../../components/LocalInsight.astro";
 
 // SSG
 export async function getStaticPaths() {
@@ -39,20 +41,32 @@ const galleryImages = city.imageGallery?.length
       loop="true"
       speed="700"
     >
-      {galleryImages.map((img) => (
-        <swiper-slide>
-          <div class="relative w-full h-72 md:h-96">
-            <img
-              src={img}
-              alt={city.title}
-              class="w-full h-full object-cover transition-transform duration-700 hero-zoom"
-            />
-            <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/60 to-transparent"></div>
-          </div>
-        </swiper-slide>
-      ))}
+      {galleryImages.map((img) => {
+        const isProd = import.meta.env.PROD;
+        const heroSrc = isProd
+          ? `/cdn-cgi/image/width=1200,quality=80,format=auto/${encodeURIComponent(img)}`
+          : img;
+
+        return (
+          <swiper-slide>
+            <div class="relative w-full h-72 md:h-96">
+              <img
+                src={heroSrc}
+                width="1200"
+                height="600"
+                loading="eager"
+                fetchpriority="high"
+                alt={city.title}
+                class="w-full h-full object-cover transition-transform duration-700 hero-zoom"
+              />
+              <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/60 to-transparent"></div>
+            </div>
+          </swiper-slide>
+        );
+      })}
     </swiper-container>
   </section>
+
 
   <!-- TITLE -->
   <section class="mb-12">
@@ -76,18 +90,62 @@ const galleryImages = city.imageGallery?.length
     <main class="md:col-span-2 space-y-20">
 
       <!-- TOP PLACES -->
-      <TopPlacesGrid
-        title="Top Places to Visit"
-        places={city.bestPlaces?.slice(0, 6)}
-      />
+      <section class="space-y-6">
+        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">
+          Top Places to Visit in {city.title}
+        </h2>
+
+        <PlaceCarousel
+          title={null}
+          places={city.bestPlaces}
+        />
+      </section>
 
       <!-- HIDDEN GEMS -->
       {city.hiddenPlaces?.length > 0 && (
-        <PlaceCarousel
-          title="Hidden Gems"
-          places={city.hiddenPlaces}
+        <section class="space-y-4">
+          <h2 class="text-xl font-semibold text-slate-700 dark:text-slate-300">
+            Hidden Gems
+          </h2>
+
+          <PlaceCarousel
+            title={null}
+            places={city.hiddenPlaces}
+          />
+        </section>
+      )}
+
+      {city.thingsToDo && (
+        <CitySimpleList title="Things To Do" items={city.thingsToDo} />
+      )}
+
+      {city.bestTime && (
+        <CityInfoCards title="Best Time to Visit" data={city.bestTime} />
+      )}
+
+      {city.idealStay && (
+        <CityInfoCards title="Ideal Stay Duration" data={city.idealStay} />
+      )}
+
+      {city.budget && (
+        <CityInfoCards title="Budget Overview" data={city.budget.summary} />
+      )}
+
+      {city.food && (
+        <CitySimpleList title="What to Eat" items={city.food} />
+      )}
+
+      {city.tips && (
+        <CitySimpleList title="Important Tips" items={city.tips} />
+      )}
+
+      {city.localInsight && (
+        <LocalInsight
+          title={city.localInsight.title}
+          tip={city.localInsight.tip}
         />
       )}
+
 
       <!-- MAP OVERVIEW -->
       {city.lat && city.lng && (
@@ -98,12 +156,12 @@ const galleryImages = city.imageGallery?.length
       )}
 
       <!-- CTA -->
-      <a
+      <!--<a
         href={`/city/${city.slug}/places`}
         class="inline-block text-accent font-semibold"
       >
         View all places in {city.title} →
-      </a>
+      </a> -->
 
     </main>
 

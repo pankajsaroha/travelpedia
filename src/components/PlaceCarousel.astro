@@ -10,11 +10,23 @@ const { title, places = [] } = Astro.props;
     </h2>
 
     <swiper-container
-        class="w-full premium-carousel"
-        slides-per-view="auto"
-        space-between="20"
-        navigation="true"
-        pagination="false"
+      class="w-full premium-carousel"
+      slides-per-view="auto"
+      space-between="20"
+      pagination="false"
+      navigation="false"
+
+      allow-touch-move="true"
+      grab-cursor="true"
+      free-mode="true"
+      free-mode-momentum="true"
+      free-mode-momentum-ratio="0.8"
+
+      mousewheel="true"
+      mousewheel-force-to-axis="true"
+      mousewheel-release-on-edges="true"
+
+      resistance-ratio="0.85"
     >
 
       {places.map((place) => (
@@ -29,11 +41,15 @@ const { title, places = [] } = Astro.props;
             <!-- IMAGE -->
             <div class="relative h-36 w-full overflow-hidden">
               <img
-                src={place.images?.[0] || "/images/placeholder-1.svg"}
+                src={import.meta.env.PROD
+                  ? `/cdn-cgi/image/width=360,quality=65,format=auto/${encodeURIComponent(place.images?.[0])}`
+                  : place.images?.[0]}
+                width="360"
+                height="240"
+                loading="lazy"
+                decoding="async"
                 alt={place.title}
-                class="w-full h-full object-cover
-                       transition-transform duration-500
-                       group-hover:scale-105"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
 
               <div class="absolute bottom-0 left-0 right-0 h-16
