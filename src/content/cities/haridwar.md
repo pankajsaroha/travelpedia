@@ -118,8 +118,8 @@ localInsight:
   title: "Local Insight"
   tip: "Sit quietly at any ghat early morning (5–6 AM). No phones. No rush. That’s when Haridwar feels truly magical."
 
-lat: 30.0889
-lng: 78.2676
+lat: 29.940682133683595
+lng: 78.13926415154812
 
 region: north
 

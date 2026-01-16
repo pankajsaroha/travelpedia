@@ -6,7 +6,7 @@ region: north
 
 excerpt: "Kedarnath is one of the holiest Jyotirlingas of Lord Shiva, located high in the Himalayas and accessible only during specific months."
 
-popular: true
+popular: false
 idealTripLength: "3-4"
 
 themes:
