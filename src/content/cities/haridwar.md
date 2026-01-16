@@ -9,19 +9,19 @@ excerpt: "Haridwar is one of India’s holiest cities where the River Ganga ente
 aboutOneLine: "Spiritual gateway of India where faith, Ganga, and daily life flow together."
 
 imageGallery:
-  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/2.webp
-  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/1.webp
-  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/3.webp
-  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/4.webp
-  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/7.webp
-  - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/8.webp
+  - https://images.travelpedia.online/cities/haridwar/har-ki-pauri/2.webp
+  - https://images.travelpedia.online/cities/haridwar/har-ki-pauri/1.webp
+  - https://images.travelpedia.online/cities/haridwar/har-ki-pauri/3.webp
+  - https://images.travelpedia.online/cities/haridwar/har-ki-pauri/4.webp
+  - https://images.travelpedia.online/cities/haridwar/har-ki-pauri/7.webp
+  - https://images.travelpedia.online/cities/haridwar/har-ki-pauri/8.webp
 
 bestPlaces:
   - slug: har-ki-pauri
     title: Har Ki Pauri
     excerpt: Evening Ganga Aarti at the most sacred ghat
     images:
-      - https://pub-83d72fb53de24c548563a432f97191fc.r2.dev/cities/haridwar/har-ki-pauri/2.webp
+      - https://images.travelpedia.online/cities/haridwar/har-ki-pauri/2.webp
 
   - slug: mansa-devi
     title: Mansa Devi Temple
