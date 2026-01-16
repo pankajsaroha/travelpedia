@@ -135,9 +135,7 @@ const shortTripCities = cityPages.filter(
         Short Trips (2–3 Days)
       </h2>
 
-      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {shortTripCities.map(c => <CityCard city={c} />)}
-      </div>
+    <CityCarousel cities={shortTripCities} />
     </section>
   )}
 
