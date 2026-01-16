@@ -30,7 +30,7 @@ const images = city.imageGallery?.length
             <img
               src={import.meta.env.PROD
                 ? `/cdn-cgi/image/width=420,quality=70,format=auto/${encodeURIComponent(images[0])}`
-                : images[0]}
+                : img}
               width="420"
               height="288"
               loading="lazy"
